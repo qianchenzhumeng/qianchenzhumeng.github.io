@@ -129,4 +129,4 @@ void signal_handler_IO (int status)
 ## 参考
 1. [浅析Linux IO技术体系](http://mp.weixin.qq.com/s?__biz=MzA3NDM1NjUwMQ==&amp;mid=200266959&amp;idx=1&amp;sn=fa2240310c3995284bc9da3878ca07be&amp;scene=1#rd)
 
-2. [Serial-Programming-HOWTO](www.tldp.org/HOWTO/pdf/Serial-Programming-HOWTO.pdf)
+2. [Serial-Programming-HOWTO](https://tldp.org/HOWTO/Serial-Programming-HOWTO/)
