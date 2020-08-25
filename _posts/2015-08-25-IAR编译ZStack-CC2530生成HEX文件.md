@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "IAR编译ZStack-CC2530生成HEX文件"
+title:  "IAR 编译 ZStack-CC2530 生成 HEX 文件"
 date:   2015-08-25 00:11:26 +0000
 categories: [Embedded, MCU]
 ---
