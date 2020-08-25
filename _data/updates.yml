@@ -2,5 +2,11 @@
   filename: 'eagle-pcb-panelize'
   lastmod: '2020-08-25 14:25:00 +0800'
 -
+  filename: 'IAR编译ZStack-CC2530生成HEX文件'
+  lastmod: '2020-08-25 16:27:26 +0800'
+-
   filename: 'linux-serial-programming'
   lastmod: '2020-08-24 15:38:17 +0800'
+-
+  filename: 'STM8开发环境搭建'
+  lastmod: '2020-08-25 16:27:26 +0800'
