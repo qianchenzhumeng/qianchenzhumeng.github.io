@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "EAGLE PCB 拼板"
+title:  "Eagle PCB 拼板"
 date:   2015-08-25 00:11:26 +0000
 categories: [Embedded, PCB]
 ---
