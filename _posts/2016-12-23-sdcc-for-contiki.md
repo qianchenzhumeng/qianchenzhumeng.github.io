@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "SDCC for Contiki"
-date:   2016-12-23 09:41:00 +0000
+date:   2016-12-23 09:41:00 +0800
 categories: [Embedded, MCU]
 tags: [Contiki]
 ---

@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Kura Mosquitto TLS"
-date:   2017-07-06 11:27:00 +0000
+date:   2017-07-06 11:27:00 +0800
 categories: [IoT, MQTT]
 tags: [MQTT, Kura, Mosquitto]
 ---

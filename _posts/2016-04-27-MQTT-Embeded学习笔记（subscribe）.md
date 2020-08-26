@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "MQTT Embeded 学习笔记（订阅消息）"
-date:   2016-04-27 10:09:00 +0000
+date:   2016-04-27 10:09:00 +0800
 categories: [IoT, MQTT]
 tags: [MQTT, ESP8266]
 ---

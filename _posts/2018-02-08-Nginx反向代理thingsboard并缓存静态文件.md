@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Nginx 反向代理 Thingsboard 并缓存静态文件"
-date:   2018-02-08 20:45:00 +0000
+date:   2018-02-08 20:45:00 +0800
 categories: [IoT, Server]
 tags: [ThingsBoard, Nginx]
 ---

@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "MQTT Embeded 学习笔记（发布消息）"
-date:   2016-03-30 15:45:00 +0000
+date:   2016-03-30 15:45:00 +0800
 categories: [IoT, MQTT]
 tags: [MQTT, STM32, ESP8266]
 ---

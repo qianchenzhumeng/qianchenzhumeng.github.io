@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Eagle PCB 拼板"
-date:   2015-08-25 00:11:26 +0000
+date:   2015-08-25 00:11:26 +0800
 categories: [Embedded, PCB]
 ---
 

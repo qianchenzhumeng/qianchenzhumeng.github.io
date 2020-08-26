@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Linux 串口编程"
-date:   2015-08-25 00:11:28 +0000
+date:   2015-08-25 00:11:28 +0800
 categories: Linux
 ---
 ## 信号驱动的IO

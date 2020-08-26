@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Qt/Embeded(4.8.6)交叉编译环境搭建"
-date:   2015-08-25 00:11:26 +0000
+date:   2015-08-25 00:11:26 +0800
 categories: [Embedded, Qt]
 ---
 

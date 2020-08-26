@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Mosquitto 笔记"
-date:   2016-03-29 00:09:00 +0000
+date:   2016-03-29 00:09:00 +0800
 categories: [IoT, MQTT]
 tags: [MQTT, ESP8266]
 ---

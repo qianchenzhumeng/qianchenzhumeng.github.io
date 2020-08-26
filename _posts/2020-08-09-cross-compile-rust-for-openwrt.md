@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Cross Compile Rust For OpenWRT"
-date:   2020-08-09 00:57:29 +0000
+date:   2020-08-09 00:57:29 +0800
 categories: Rust
 ---
 # 背景
