@@ -1,12 +1,81 @@
 -
   filename: 'eagle-pcb-panelize'
-  lastmod: '2020-08-25 14:25:00 +0800'
+  lastmod: '2020-08-26 10:26:20 +0800'
 -
   filename: 'IAR编译ZStack-CC2530生成HEX文件'
-  lastmod: '2020-08-25 16:27:26 +0800'
+  lastmod: '2020-08-26 10:26:20 +0800'
 -
   filename: 'linux-serial-programming'
-  lastmod: '2020-08-24 15:38:17 +0800'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Qt_Embedded(4'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Qt应用程序读写xls文件'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'read-write-xls-file-in-c-plus-plus'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Ubuntu下Qt(4'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Windows下Qt(4'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: '使Qt获取event的读写权限'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: '安装QtSerialPort'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: '触摸屏与LCD坐标转换'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: '触摸屏校准'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Mosquitto笔记'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'MQTT-Embeded学习笔记（publish）'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'MQTT_V3_1_1学习笔记（剩余长度编码规则）'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'MQTT-Embeded学习笔记（subscribe）'
+  lastmod: '2020-08-26 10:26:20 +0800'
 -
   filename: 'STM8开发环境搭建'
-  lastmod: '2020-08-25 16:27:26 +0800'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Eagle设置过孔盖油或开窗'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Contiki-OS-for-cc2530F256'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'sdcc-for-contiki'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Kura-Mosquitto-TLS'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Eagle输出Gerber数据'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Nginx反向代理thingsboard并缓存静态文件'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'ThingsBoard-MQTT'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'Simplify3D使用笔记'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: 'cross-compile-rust-for-openwrt'
+  lastmod: '2020-08-26 10:26:20 +0800'
+-
+  filename: '自由使用Dragino网关MCU串口'
+  lastmod: '2020-08-26 10:26:20 +0800'
