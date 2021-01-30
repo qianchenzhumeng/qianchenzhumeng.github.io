@@ -53,6 +53,6 @@ LoRa无线系统在不同地区（例如：美国、欧盟、中国）使用不�
 
 ## 参考
 
-[1]https://www.rfwireless-world.com/Tutorials/LoRa-tutorial.html
+[1] https://www.rfwireless-world.com/Tutorials/LoRa-tutorial.html
 
 [2] https://www.rfwireless-world.com/Tutorials/LoRa-frequency-bands.html
