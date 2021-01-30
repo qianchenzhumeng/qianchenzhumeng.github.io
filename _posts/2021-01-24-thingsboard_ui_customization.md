@@ -2,7 +2,7 @@
 layout: post
 title:  "ThingsBoard UI 修改"
 date:   2021-01-24 08:23:00 +0800
-categories: [IoT]
+categories: [IoT, Server]
 tags: [ThingsBoard]
 ---
 
