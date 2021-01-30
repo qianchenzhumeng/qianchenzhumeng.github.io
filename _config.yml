@@ -49,7 +49,7 @@ baseurl: ''
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
 timezone: Asia/Shanghai
 
-baidu-analysis: '0dfbba74f4bbf4feedaaf402fbae1dd8'
+baidu-analysis: 'ee6437e6d1a9798b69c47a88b0e802ba'
 
 google_analytics:
   id: 'UA-176274208-1'          # Fill with your Google Analytics ID

@@ -505,6 +505,9 @@ footer {
   .footer-right {
     text-align: right;
   }
+  .footer-center {
+    text-align: center;
+  }
 }
 
 /*--- Panels ---*/
@@ -974,7 +977,7 @@ div.post-content .table-wrapper {
       -ms-flex-pack: distribute!important;
       justify-content: space-around!important;
     }
-    .footer-left, .footer-right {
+    .footer-left, footer-center, .footer-right {
       text-align: center;
     }
   }
