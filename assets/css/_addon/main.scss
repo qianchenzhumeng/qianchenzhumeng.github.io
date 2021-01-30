@@ -615,6 +615,10 @@ footer {
 }
 
 /*--- Typography ---*/
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  font-family: Source Code Pro, Cascadia Code, Helvetica, arial, freesans, clean, sans-serif;
+}
 
 h1 {
   @extend %heading;
@@ -626,6 +630,8 @@ h2 {
   @extend %section;
   @extend %anchor;
   font-size: 1.4rem;
+  border-bottom: 1px solid #ccc;
+  color: #000;
 }
 
 h3 {
@@ -826,6 +832,7 @@ div.post-content .table-wrapper {
   }
   p {
     font-size: 1.08rem;
+    margin-bottom: 0;
   }
 }
 
