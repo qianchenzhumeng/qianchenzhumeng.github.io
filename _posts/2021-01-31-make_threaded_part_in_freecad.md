@@ -78,6 +78,7 @@ wiki 上的方法 3 步骤有点问题，比如在第 8 步中创建**增料圆�
 
 ## 参考
 
-[1] https://wiki.freecadweb.org/Thread_for_Screw_Tutorial
+[1] [https://wiki.freecadweb.org/Thread_for_Screw_Tutorial](https://wiki.freecadweb.org/Thread_for_Screw_Tutorial)
 
-[2] https://forum.freecadweb.org/viewtopic.php?t=54184&p=465782
+[2] [https://forum.freecadweb.org/viewtopic.php?t=54184&p=465782](https://forum.freecadweb.org/viewtopic.php?t=54184&p=465782)
+

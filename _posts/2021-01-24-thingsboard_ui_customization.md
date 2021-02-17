@@ -145,7 +145,7 @@ mvn install -rf :ui-ngx
 
 ## 参考
 
-[1] https://thingsboard.io/docs/user-guide/install/building-from-source/
+[1] [https://thingsboard.io/docs/user-guide/install/building-from-source/](https://thingsboard.io/docs/user-guide/install/building-from-source/)
 
-[2] https://blog.csdn.net/qgbihc/article/details/108969424
+[2] [https://blog.csdn.net/qgbihc/article/details/108969424](https://blog.csdn.net/qgbihc/article/details/108969424)
 

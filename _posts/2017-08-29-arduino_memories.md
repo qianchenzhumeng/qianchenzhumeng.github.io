@@ -36,4 +36,4 @@ EEPROM是另一种非易失性存储器，可在程序运行时读取。它只�
 
 ## 参考
 
-[1] https://learn.adafruit.com/memories-of-an-arduino/arduino-memories
+[1] [https://learn.adafruit.com/memories-of-an-arduino/arduino-memories](https://learn.adafruit.com/memories-of-an-arduino/arduino-memories)

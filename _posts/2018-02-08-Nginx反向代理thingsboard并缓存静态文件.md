@@ -68,8 +68,8 @@ server {
 
 ## 参考
 
-[1] https://www.nginx.com/blog/nginx-caching-guide/
+[1] [https://www.nginx.com/blog/nginx-caching-guide/](https://www.nginx.com/blog/nginx-caching-guide/)
 
-[2] https://linode.com/docs/development/iot/install-thingsboard-iot-dashboard/
+[2] [https://linode.com/docs/development/iot/install-thingsboard-iot-dashboard/](https://linode.com/docs/development/iot/install-thingsboard-iot-dashboard/)
 
-[3] https://www.howtoforge.com/make-browsers-cache-static-files-on-nginx
+[3] [https://www.howtoforge.com/make-browsers-cache-static-files-on-nginx](https://www.howtoforge.com/make-browsers-cache-static-files-on-nginx)

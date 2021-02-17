@@ -239,6 +239,6 @@ $ keytool -delete -alias **[path to keystore]**r -keystore cacerts -storepass **
 
 ## 参考
 
-[1] http://eclipse.github.io/kura/config/ssl-configuration.html
+[1] [http://eclipse.github.io/kura/config/ssl-configuration.html](http://eclipse.github.io/kura/config/ssl-configuration.html)
 
-[2] http://www.steves-internet-guide.com/mosquitto-tls/
+[2] [http://www.steves-internet-guide.com/mosquitto-tls/](http://www.steves-internet-guide.com/mosquitto-tls/)

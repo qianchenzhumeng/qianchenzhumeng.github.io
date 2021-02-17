@@ -30,6 +30,6 @@ mosquitto_pub.exe -d -h "127.0.0.1" -t "v1/gateway/telemetry" -m "{\"SN-002\": [
 
 ## 参考
 
-[1] https://thingsboard.io/docs/reference/gateway-mqtt-api/#publish-attribute-update-to-the-server
+[1] [https://thingsboard.io/docs/reference/gateway-mqtt-api/#publish-attribute-update-to-the-server](https://thingsboard.io/docs/reference/gateway-mqtt-api/#publish-attribute-update-to-the-server)
 
-[2] https://thingsboard.io/docs/reference/mqtt-api/
+[2] [https://thingsboard.io/docs/reference/mqtt-api/](https://thingsboard.io/docs/reference/mqtt-api/)

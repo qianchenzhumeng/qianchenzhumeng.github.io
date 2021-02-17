@@ -60,4 +60,4 @@ root@dragino-16e828:~# cat /etc/inittab
 
 ## 参考
 
-[1] http://www.dragino.com/products/lora-lorawan-gateway/item/117-lg01-p.html
+[1] [http://www.dragino.com/products/lora-lorawan-gateway/item/117-lg01-p.html](http://www.dragino.com/products/lora-lorawan-gateway/item/117-lg01-p.html)

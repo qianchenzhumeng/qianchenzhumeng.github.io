@@ -94,6 +94,6 @@ let ssl_opts = mqtt::SslOptionsBuilder::new()
 
 ## 参考
 
-[1] https://thingsboard.io/docs/user-guide/mqtt-over-ssl/
+[1] [https://thingsboard.io/docs/user-guide/mqtt-over-ssl/](https://thingsboard.io/docs/user-guide/mqtt-over-ssl/)
 
-[2] https://thingsboard.io/docs/user-guide/certificates/
+[2] [https://thingsboard.io/docs/user-guide/certificates/](https://thingsboard.io/docs/user-guide/certificates/)

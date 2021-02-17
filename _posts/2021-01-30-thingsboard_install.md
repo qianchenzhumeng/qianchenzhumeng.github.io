@@ -173,6 +173,6 @@ windows
 
 ## 参考
 
-[1] https://thingsboard.io/docs/user-guide/install/linux/
+[1] [https://thingsboard.io/docs/user-guide/install/linux/](https://thingsboard.io/docs/user-guide/install/linux/)
 
-[2] https://thingsboard.io/docs/user-guide/install/windows/
+[2] [https://thingsboard.io/docs/user-guide/install/windows/](https://thingsboard.io/docs/user-guide/install/windows/)

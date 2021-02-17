@@ -183,8 +183,8 @@ $ mips-openwrt-linux-strip hello
 
 # 参考
 
-[1] https://forge.rust-lang.org/release/platform-support.html
+[1] [https://forge.rust-lang.org/release/platform-support.html](https://forge.rust-lang.org/release/platform-support.html)
 
-[2] https://openwrt.org/docs/guide-developer/crosscompile
+[2] [https://openwrt.org/docs/guide-developer/crosscompile](https://openwrt.org/docs/guide-developer/crosscompile)
 
-[3] https://rustc-dev-guide.rust-lang.org/building/how-to-build-and-run.html#creating-a-rustup-toolchain
+[3] [https://rustc-dev-guide.rust-lang.org/building/how-to-build-and-run.html#creating-a-rustup-toolchain](https://rustc-dev-guide.rust-lang.org/building/how-to-build-and-run.html#creating-a-rustup-toolchain)
