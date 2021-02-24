@@ -31,7 +31,7 @@ sudo make install
 
 ## 3. 使用 cmocka
 
-### (1)一个简单的测试用例
+### (1) 一个简单的测试用例
 
 [cmocka.org](https://cmocka.org) 上有使用教程 [Unit testing and mocking with cmocka](https://cmocka.org/talks/cmocka_unit_testing_and_mocking.pdf)，里面介绍了如何用 cmocka 进行单元测试以及如何打桩（教程第 14 页里面有一处头文件包含错误，`stdint.h` 被误写为 `sdtint.h` ）。
 
