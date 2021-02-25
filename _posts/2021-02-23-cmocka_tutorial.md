@@ -65,7 +65,7 @@ gcc simple_test.c -lcmocka
 ./a.out
 ```
 
-### (2) setup 和 teardown 的用法
+### (2) setup & teardown
 
 setup 函数和 teardown 函数分别在测试用例前、后执行。setup 用来做一些执行测试用例前的准备工作，例如，申请内存、打开文件；teardown 用来做一些执行测试用例后的清理工作，例如，释放内存、关闭文件。使用 setup 和 teardown 的好处是不用在每个测试用例中写重复的代码。
 
@@ -120,14 +120,16 @@ gcc main.c -lcmocka
 
 运行结果：
 
-> [==========] Running 1 test(s).
-> [ RUN      ] test_case
-> setup...
-> test...
-> teardown...
-> [       OK ] test_case
-> [==========] 1 test(s) run.
-> [  PASSED  ] 1 test(s).
+```
+[==========] Running 1 test(s).
+[ RUN      ] test_case
+setup...
+test...
+teardown...
+[       OK ] test_case
+[==========] 1 test(s) run.
+[  PASSED  ] 1 test(s).
+```
 
 cmocka 源码包内的 tests/test_fixtures.c 中有详细的使用示例。
 
@@ -173,6 +175,134 @@ int main(int argc, char *argv[]) {
 
 源码包的 `tests` 和 `example` 目录下有丰富的使用示例，可以进行参考。
 
+### (3) 打桩（mocking）
+
+打桩（mocking）是在链接时完成的。使用 GNU 工具链时，需要使用链接选项 `--warp=<symbol>`，symbol 为要打桩的函数，链接器接收到该选项后，会把符号 `<symbol>` 解析成 `__wrap_<symbol>`。
+
+从一个简单的例子入手。
+
+```c
+/* test.c */
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+
+int get_value() {
+    return 1;
+}
+
+int add_one() {
+    int v;
+    v = get_value();
+    return v + 1;
+}
+
+static void add_test(void **state) {
+    assert_int_equal(add_one(), 2);
+}
+
+int main(int argc, char *argv[]) {
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(add_test),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}
+```
+
+用如下命令编译并运行，测试用例可以通过。
+
+```bash
+gcc test.c -lcmocka && ./a.out
+```
+
+以 mock `get_value` 函数为例，需要删除测试文件中 `get_value` 函数的定义，并编写桩函数 `__wrap_get_value`，返回不同的值：
+
+```c
+/* test_mocking.c */
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+
+int get_value();
+int __wrap_get_value() {
+    int v;
+    v = mock_type(int);
+    return v;
+}
+
+int add_one() {
+    int v;
+    v = get_value();
+    return v + 1;
+}
+
+static void add_test(void **state) {
+    (void)state;
+    int a;
+
+    will_return(__wrap_get_value, 3);
+
+    a = add_one();
+    assert_int_equal(a, 4);
+}
+
+int main(int argc, char *argv[]) {
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(add_test),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}
+```
+
+使用 `-Wl` 选项将选项 `--wap=get_value` 传给链接器：
+
+```bash
+gcc get_value.c test_mocking.c -I. -Wl,--wrap=get_value -lcmocka && ./a.out
+```
+
+反汇编 a.out，可以看到，`add_one` 调用的是 `__wrap_get_value` 函数：
+
+```assembly
+0000000000400761 <add_one>:
+; ...
+  40076e:       e8 0b 00 00 00          callq  40077e <__wrap_get_value>
+; ...
+```
+
+链接器选项 `--wap=get_value` 只会将未定义的符号 `symbol` 解析成 `__wrap_symbol`，所谓的未定义的符号应该是指编译单元内的，即一个文件内。如果 `get_value` 的定义和桩函数 `__wrap_get_valu` 的定义出现在同一个文件中，通过该选项无法完成符号替换，测试用例不通过 [[1]](https://stackoverflow.com/questions/13961774/gnu-gcc-ld-wrapping-a-call-to-symbol-with-caller-and-callee-defined-in-the-sam)。
+
+```c
+/* test_mocking_failed.c */
+/* ... */
+int get_value() {
+    return 1;
+}
+/* ... */
+```
+
+```bash
+gcc test_mocking_failed.c -I. -Wl,--wrap=get_value -lcmocka && ./a.out
+```
+
+测试用例会失败。
+
+反汇编 a.out，可以看到，`add_one` 调用的仍然是 `get_value` 函数：
+
+```bash
+objdump -s -d a.out
+```
+
+```assembly
+0000000000400761 <add_one>:
+; ...
+  40076e:       e8 e3 ff ff ff          callq  400756 <get_value>
+; ...
+```
+
 ## 4. 故障解决
 
 ### (1) 编译源码时 cmake 报错
@@ -188,3 +318,7 @@ int main(int argc, char *argv[]) {
 > simple_test.c:(.text+0x77): undefined reference to `_cmocka_run_group_tests'
 
 链接时，需要使用选项 `-lcmocka` 链接 cmocka 库。
+
+## 参考
+
+[1] [https://stackoverflow.com/questions/13961774/gnu-gcc-ld-wrapping-a-call-to-symbol-with-caller-and-callee-defined-in-the-sam](https://stackoverflow.com/questions/13961774/gnu-gcc-ld-wrapping-a-call-to-symbol-with-caller-and-callee-defined-in-the-sam)
