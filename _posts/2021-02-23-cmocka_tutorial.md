@@ -65,7 +65,7 @@ gcc simple_test.c -lcmocka
 ./a.out
 ```
 
-### (2) setup & teardown
+### (2) setup 和 teardown
 
 setup 函数和 teardown 函数分别在测试用例前、后执行。setup 用来做一些执行测试用例前的准备工作，例如，申请内存、打开文件；teardown 用来做一些执行测试用例后的清理工作，例如，释放内存、关闭文件。使用 setup 和 teardown 的好处是不用在每个测试用例中写重复的代码。
 
@@ -303,7 +303,25 @@ objdump -s -d a.out
 ; ...
 ```
 
-## 4. 故障解决
+## 4. 代码覆盖率
+
+使用 gcov 和 lcov 查看代码覆盖率。
+
+```bash
+mkdir code_coverage
+cd code_coverage
+gcc -coverage -O0 -o test_mocking ../test_mocking.c -Wl,--wrap=get_value -lcmocka
+./test_mocking
+gcov ../test_mocking.c -o .
+# 使用 lcov 收集当前目录下的覆盖率数据，将结果储存在 test_mocking.info 中
+lcov -d . -t test_mocking -o test_mocking.info -b . -c
+# 为 test_mocking.info 中的覆盖率数据生成 html 文档
+genhtml -o output test_mocking.info
+```
+
+用浏览器打开 output/index.html 即可查看代码覆盖率报告。
+
+## 5. 故障解决
 
 ### (1) 编译源码时 cmake 报错
 
