@@ -81,11 +81,11 @@ sudo mysql -u root mysql
 create user 'partkeepr'@'localhost' identified by 'partkeepr';
 
 # 创建数据库
-# create database partkeepr charset="utf8";
-CREATE DATABASE parkeepr CHARACTER SET UTF8;
+CREATE DATABASE partkeepr CHARACTER SET UTF8;
 
 # 将数据库授权给创建好的用户
 GRANT ALL PRIVILEGES ON partkeepr.* TO partkeepr@localhost;
+GRANT USAGE ON *.* TO `partkeepr`@`localhost` IDENTIFIED BY 'partkeepr';
 FLUSH PRIVILEGES;
 ```
 
