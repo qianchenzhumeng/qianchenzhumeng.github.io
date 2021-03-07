@@ -25,6 +25,8 @@ sudo apt-get install php
 tar -xvjf partkeepr-1.4.0.tbz2
 sudo cp partkeepr-1.4.0 /var/www/partkeepr -r
 sudo chown www-data:www-data /var/www/partkeepr -R
+# 将当前用户添加到 www-data 组（可能需要重启）：
+sudo adduser [username] www-data
 ```
 
 ### (3) 安装依赖软件
@@ -65,11 +67,12 @@ fastcgi_pass unix://var/run/php/php7.4-fpm.sock;
 date.timezone = Asia/Shanghai
 ```
 
-之后启动 nginx 以及 mysql
+之后启动 nginx 以及 mysql，重启 php-fpm
 
 ```bash
 sudo service nginx start
 sudo service mysql start
+sudo service php-fpm restart
 ```
 
 数据库配置：
@@ -108,6 +111,20 @@ systemctl is-enabled php7.0-fpm
 ### (5) 安装 PartKeepr
 
 在浏览器访问安装页面，例如：[http://127.0.0.1/setup/index.html](http://127.0.0.1/setup/index.html)，按照页面呈现的安装步骤操作。如果遇到问题，参见“故障解决”。
+
+安装完成后，根据提示添加定期执行任务：
+
+```bash
+crontab -e
+```
+
+添加如下内容：
+
+```
+0 0,6,12,18 * * * /usr/bin/php /var/www/partkeepr/app/console partkeepr:cron:run
+```
+
+上述操作是为当前用户创建定时任务，为了使上述任务顺利运行，需要确保当前用户在 www-data 组中。
 
 ## 3. 故障解决
 
@@ -201,3 +218,8 @@ php7.0 -m
 [2] [https://askubuntu.com/questions/999999/php-with-pdo-mysql-in-ubuntu-16-04](https://askubuntu.com/questions/999999/php-with-pdo-mysql-in-ubuntu-16-04)
 
 [3] [https://www.jb51.net/article/202399.htm](https://www.jb51.net/article/202399.htm)
+
+[4] [https://github.com/partkeepr/PartKeepr/issues/905](https://github.com/partkeepr/PartKeepr/issues/905)
+
+[5] [https://wiki.partkeepr.org/wiki/PartKeepr_1.4.0_installation_on_a_Raspberry_Pi](https://wiki.partkeepr.org/wiki/PartKeepr_1.4.0_installation_on_a_Raspberry_Pi)
+
