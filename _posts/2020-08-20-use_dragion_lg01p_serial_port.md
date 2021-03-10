@@ -12,6 +12,26 @@ Dragino LG01-P LoRa Gateway
 
 ![LG01-P](/assets/img/2020-08-20-自由使用Dragino网关MCU串口.assets/LG01-P.png)
 
+Linux Side:
+
+- Processor: AR9331
+
+- Frequency: 400MHz
+
+- Flash: 16MB
+
+- RAM: 64MB
+
+MCU/LoRa Side:
+
+- MCU: ATMega328P
+
+- Flash: 32KB
+
+- RAM: 2KB
+
+- LoRa Chip: SX2176/78
+
 网关设计应该借鉴了 Arduino Yun，运行 OpenWRT 系统。
 
 ## 串口
