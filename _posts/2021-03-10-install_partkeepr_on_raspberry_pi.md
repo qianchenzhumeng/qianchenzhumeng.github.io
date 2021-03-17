@@ -205,7 +205,17 @@ crontab -e
 
 上述操作是为当前用户创建定时任务，为了使上述任务顺利运行，需要确保当前用户在 www-data 组中。
 
-## 3. 故障解决
+## 3. 备份数据库
+
+树莓派还是比较脆弱，最好经常备份一下数据库：
+
+```bash
+mysqldump -upartkeepr -ppartkeepr partkeepr > partkeepr_2021_03_17_20_31.mysqldump
+```
+
+导出后放在其他设备上。
+
+## 4. 故障解决
 
 ### (1) 预热缓存时报错
 
