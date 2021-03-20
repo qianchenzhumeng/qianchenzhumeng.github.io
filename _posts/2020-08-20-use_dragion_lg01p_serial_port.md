@@ -2,8 +2,8 @@
 layout: post
 title:  "自由使用 Dragino 网关 MCU 串口"
 date:   2020-08-20 23:41:00 +0800
-categories: [Embedded, OpenWRT]
-tags: [OpenWRT]
+categories: [Embedded, OpenWrt]
+tags: [OpenWrt]
 ---
 
 ## 网关
