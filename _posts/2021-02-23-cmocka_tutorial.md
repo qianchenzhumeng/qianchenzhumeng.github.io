@@ -303,6 +303,12 @@ objdump -s -d a.out
 ; ...
 ```
 
+### (4) 动态内存分配
+
+cmocka 提供了内存申请和释放函数，test_malloc、test_calloc、test_realloc 以及 test_free，分别对应 C 库的 malloc、calloc、realloc 以及 free。
+
+以 test_malloc 和 test_free 为例，它们在 C 库对应的函数上进行了封装，会以链表记录内存申请和释放情况，使用过程中一旦发生内存泄漏，涉及的用例会被标记为失败。需要注意的是，被测函数中使用 test_malloc 申请的内存，必须在被测函数运行结束前释放，否则该测试用例会判定为因内存泄漏而失败。例如，被测函数中申请内存，teardown 释放对应内存的情况是不被允许的。setup 中申请的内存可以在 teardown 中释放。
+
 ## 4. 代码覆盖率
 
 使用 gcov 和 lcov 查看代码覆盖率。
