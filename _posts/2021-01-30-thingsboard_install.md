@@ -4,7 +4,7 @@ title:  "ThingsBoard3.1 安装"
 date:   2021-01-30 20:58:00 +0800
 categories: [IoT, Server]
 tags: [ThingsBoard]
-
+excerpt: 这篇文章介绍了如何安装开源 IoT 平台 ThingsBoard。
 ---
 
 ## 1. Linux

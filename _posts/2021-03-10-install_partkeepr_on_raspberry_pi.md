@@ -1,9 +1,10 @@
 ---
 layout: post
-title:  "在树莓派上安装 ParKeepr"
+title:  "在树莓派上安装 PartKeepr"
 date:   2021-03-10 20:05:00 +0800
-categories: [Toolbox, Parkeepr]
+categories: [Toolbox, PartKeepr]
 tags: [Inventory Management]
+excerpt: 这篇文章介绍了如何在树莓派上安装电子元器件库存管理软件 PartKeepr。
 ---
 
 ## 1. 背景

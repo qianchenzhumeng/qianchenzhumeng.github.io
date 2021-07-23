@@ -4,6 +4,7 @@ title:  "ThingsBoard UI 修改"
 date:   2021-01-24 08:23:00 +0800
 categories: [IoT, Server]
 tags: [ThingsBoard]
+excerpt: 这篇文章介绍了如何修改开源 IoT 平台 ThingsBoard 的前端界面。
 ---
 
 ## 1. 背景

@@ -4,9 +4,8 @@ title:  "Rust 串口编程"
 date:   2021-07-22 20:59:00 +0800
 categories: [Embedded, Other]
 tags: [SerialPort]
+excerpt: 这篇文章主要介绍了如何使用 Rust 编写 Linux 上的串口通信程序。
 ---
-
-这篇文章主要介绍如何使用 Rust 编写 Linux 上的串口通信程序。
 
 ## 1. 背景
 

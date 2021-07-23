@@ -4,6 +4,7 @@ title:  "使用 FreeCAD 绘制螺纹"
 date:   2021-01-31 20:12:00 +0800
 categories: [3D Printing, FreeCAD]
 tags: [3D Printing]
+excerpt: 这篇文章介绍了如何在 FreeCAD 中绘制非标螺纹。
 ---
 
 ## 1. 背景

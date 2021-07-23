@@ -4,6 +4,7 @@ title:  "OpenWrt GPIO（MT7688AN）"
 date:   2021-03-20 10:00:00 +0800
 categories: [Embedded, OpenWrt]
 tags: [OpenWrt]
+excerpt: 这篇文章以 MT7688AN 为例，介绍了如何在 OpenWrt 上使用 GPIO。
 ---
 
 ## 1. 设备树

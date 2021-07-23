@@ -1,12 +1,13 @@
 ---
 layout: post
-title:  "ParKeepr（库存管理软件）安装"
+title:  "PartKeepr（库存管理软件）安装"
 date:   2021-02-27 21:43:00 +0800
-categories: [Toolbox, Parkeepr]
+categories: [Toolbox, PartKeepr]
 tags: [Inventory Management]
+excerpt: 这篇文章介绍了如何在 Ubuntu 上安装电子元器件库存管理软件 PartKeepr。
 ---
 
-## 1. ParKeepr 介绍
+## 1. PartKeepr 介绍
 
 [Parkeepr](https://partkeepr.org/) 是一款开源的库存管理软件（主要是为电子元器件管理设计的），用来管理手中的电子元器件、开发板是非常不错的。
 
@@ -128,7 +129,7 @@ crontab -e
 
 ## 3. 故障解决
 
-安装 ParKeepr 的过程中，可以查看 nginx 错误日志，有助于发现问题：
+安装 PartKeepr的过程中，可以查看 nginx 错误日志，有助于发现问题：
 
 ```bash
 tail -f /var/log/nginx/error.log

@@ -4,6 +4,7 @@ title:  "加快访问 Coursera 的速度"
 date:   2021-04-18 18:19:00 +0800
 categories: [Other]
 tags: [Other]
+excerpt: 这篇文章描述了如何通过修改 hosts 的方式加速 Coursera 访问。
 ---
 
 大多数情况下，在国内访问 Coursera 会比较慢，甚至会出现视频加载失败的问题。这是因为 DNS 被污染了，可以通过修改 hosts 的方式解决 DNS 污染问题。

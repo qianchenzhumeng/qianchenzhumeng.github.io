@@ -4,6 +4,7 @@ title:  "使用 cmocka 进行单元测试"
 date:   2021-02-23 21:46:00 +0800
 categories: [C, Unit Testing]
 tags: [Unit Testing Framework]
+excerpt: 这篇文章介绍了如何使用 cmocka 进行 C 代码单元测试。
 ---
 
 ## 1. cmocka 介绍

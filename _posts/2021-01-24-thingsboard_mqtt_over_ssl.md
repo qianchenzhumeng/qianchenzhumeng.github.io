@@ -4,7 +4,7 @@ title:  "ThingsBoard MQTT over SSL"
 date:   2021-01-24 22:37:00 +0800
 categories: [IoT, Server]
 tags: [ThingsBoard]
-
+excerpt: 这篇文章介绍了如何在开源 IoT 平台 ThingsBoard 上启用 mqtts。
 ---
 
 ## 1. 背景
