@@ -289,6 +289,25 @@ let buf = hello.as_bytes();
 assert_eq!(buf, [0x48, 0x65, 0x6c, 0x6c, 0x6f]);
 ```
 
+## 6. 链接问题记录
+
+>   = note: /mnt/f/wsl/project/iot_gw/target/arm-unknown-linux-gnueabihf/release/deps/liblibsqlite3_sys-6e13660e481f9b38.rlib(sqlite3.o): In function `unixDlOpen':
+>           sqlite3.c:(.text.unixDlOpen+0x8): warning: Using 'dlopen' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
+>           /mnt/f/wsl/tool/raspberrypi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/bin/ld: BFD (crosstool-NG crosstool-ng-1.22.0-88-g8460611) 2.25.1 assertion fail /home/dom/projects/crosstool-ng/install/bin/.build/src/binutils-2.25.1/bfd/elflink.c:2508
+>           /mnt/f/wsl/tool/raspberrypi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/bin/ld: BFD (crosstool-NG crosstool-ng-1.22.0-88-g8460611) 2.25.1 assertion fail /home/dom/projects/crosstool-ng/install/bin/.build/src/binutils-2.25.1/bfd/elflink.c:2510
+>           /mnt/f/wsl/tool/raspberrypi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/bin/ld: BFD (crosstool-NG crosstool-ng-1.22.0-88-g8460611) 2.25.1 assertion fail /home/dom/projects/crosstool-ng/install/bin/.build/src/binutils-2.25.1/bfd/elflink.c:2508
+>           /mnt/f/wsl/tool/raspberrypi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.3/../../../../arm-linux-gnueabihf/bin/ld: BFD (crosstool-NG crosstool-ng-1.22.0-88-g8460611) 2.25.1 assertion fail /home/dom/projects/crosstool-ng/install/bin/.build/src/binutils-2.25.1/bfd/elflink.c:2510
+>           collect2: error: ld returned 1 exit status
+
+GCC 静态链接的程序不能调用 dl 库。这个问题是 libsqlite3-sys 会调用 dl 库、项目的 cargo 配置文件设置了静态链接标志导致的，最后的解决办法是删除静态链接标志。
+
+```toml
+[target.arm-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+ar = "arm-linux-gnueabihf-ar"
+# rustflags = ["-C", "target-feature=+crt-static"]
+```
+
 
 
 ## 参考
