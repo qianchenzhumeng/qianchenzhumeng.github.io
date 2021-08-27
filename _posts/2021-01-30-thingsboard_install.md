@@ -97,7 +97,7 @@ sudo /usr/share/thingsboard/bin/install/install.sh --loadDemo
 sudo service thingsboard start
 ```
 
-## Windows
+## 2. Windows
 
 thingsboard-windows-3.1 和 postgresql-11.10-2-windows-x64 是配套的，使用 postgresql-13.1-1-windows-x64，会导致 thingsboard 安装失败：
 
@@ -106,17 +106,21 @@ thingsboard-windows-3.1 和 postgresql-11.10-2-windows-x64 是配套的，使用
 
 启动：
 
-```
+```cmd
+net start postgresql-x64-11
 net start thingsboard
 ```
 
 停止：
 
-```
+```cmd
 net stop thingsboard
+net stop postgresql-x64-11
 ```
 
-## 其他
+或者打开服务窗口，在里面寻找 postgresql 和 thingsboard 对应的服务，按上面的顺序操作。
+
+## 3. 其他
 
 (1) 默认账号
 
