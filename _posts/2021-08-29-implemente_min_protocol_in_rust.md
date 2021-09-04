@@ -143,11 +143,31 @@ A                               B
 
 ## 3. 使用 Rust 实现 MIN 协议
 
+### (1) 回调函数处理问题
+
 使用 Rust 实现 MIN 协议的主要挑战在于回调函数的处理，由于所有权以及生命周期的限制，不能在回调函数中像 C 语言那样通过以全局变量形式存在的串口句柄、应用程序句柄来发送、接收数据。
 
 解决办法是将串口及应用程序的句柄，在初始化的时候以不可变引用的形式在传递给 MIN 的句柄。这个串口的句柄需要单独抽象出来，需要可变借用的时候，为其实现内部可变性，避免引发可变借用及不可变借用冲突的问题。
 
 为了便于调试，例如，打印应用程序及串口标识以进行区分。实现时采用了这样的方法：串口名称的打印，在串口发送、接收函数中打印即可。应用程序的句柄需要实现一个名为 `Name` 的 Trait，这个 Trait 会返回一个字符串，在 MIN 的处理过程中可以通过应用程序句柄的这个 Trait 返回应用程序的名称。
+
+### (2) 运算问题
+
+无符号数进行减法运算时，C 语言会自动回绕，但是 Rust 会产生异常。因此，使用 Rust 实现时，无法保证被减数不小于减数的情况下，需要使用回绕减函数 `.wrapping_sub()`，以避免被减数比减数小导致的程序 panic。
+
+例如，传输模式下，校验接收帧时，会用数据帧内携带的帧序列号减去滑窗最小的序列号，由于数据帧内携带的序列号来自外部，不能保证比滑窗最小的序列号小，做减法时需要使用回绕减函数：
+
+```rust
+// let num_acked = self.rx_frame_seq - self.transport.sn_min;
+let num_acked = self.rx_frame_seq.wrapping_sub(self.transport.sn_min);
+```
+
+比较时间戳的地方，也需要这样处理。考虑这种情况：程序运行过程中，传输队列内有缓存帧的情况下，设置系统的时间往后退，这个时候，会出现当前时间小于缓存帧的时间戳，不使用回绕函数做减法运算时也会导致程序 panic。
+
+```rust
+// if now - last_sent_time_ms >= TRANSPORT_FRAME_RETRANSMIT_TIMEOUT_MS {
+if now.wrapping_sub(last_sent_time_ms) >= TRANSPORT_FRAME_RETRANSMIT_TIMEOUT_MS {
+```
 
 源代码放在 GitHub 上（[min-rs](https://github.com/qianchenzhumeng/min-rs)）。
 
