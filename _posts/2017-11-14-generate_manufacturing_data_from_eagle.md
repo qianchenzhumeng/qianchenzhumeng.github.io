@@ -32,7 +32,7 @@ Eagle 自带了一些生成制造数据的 CAM 处理器文件（位于程序安
 - 生成电镀孔和非电镀孔的钻孔数据
 - 生成光绘信息文件
 
-![image-20211007101239576](/assets/img/2017-11-14-generate_gerber_files_from_eagle.assets/image-20211007101239576.png)
+<img src="/assets/img/2017-11-14-generate_gerber_files_from_eagle.assets/image-20211007101239576.png" alt="image-20211007101239576" style="width:50%;" />
 
 ### (1) 生成过孔数据
 
@@ -40,7 +40,7 @@ PCB 预览图中，走线过孔、接插件的固定插孔都是电镀孔，四�
 
 Eagle 自带的 CAM 处理器文件中有生成钻孔数据的作业文件（excellon.cam）。从下图可以看到，该作业文件选中了 44 Drills 层和 45 Holes 层，即电镀孔和非电镀孔数据生成在一个文件里。
 
-<img src="/assets/img/2017-11-14-generate_gerber_files_from_eagle.assets/image-20211007102418406.png" alt="image-20211007102418406" style="width:40%;" />
+<img src="/assets/img/2017-11-14-generate_gerber_files_from_eagle.assets/image-20211007102418406.png" alt="image-20211007102418406" style="width:60%;" />
 
 点击“处理作业”后，设计文件所在的目录内会出现 `arduino_Uno_Rev3-02-TH.drd` 文件，该文件包含的数据就是所有的电镀孔和非电镀孔信息。
 
