@@ -767,7 +767,10 @@ div.post-content .table-wrapper {
     min-width: 60%;
     overflow-x: auto;
     border-spacing: 0;
+    margin-left:auto;
+    margin-right:auto;
     margin-bottom: 1.5rem;
+    line-height: 1;
 
     thead {
       border-bottom: solid 2px rgba(210, 215, 217, 0.75);
