@@ -771,6 +771,20 @@ div.post-content .table-wrapper {
     margin-right:auto;
     margin-bottom: 1.5rem;
     line-height: 1;
+    
+    th, td {
+        border: 1px solid #ccc;
+        padding: 1px 5px;
+    }
+
+    tr {
+        border-top: 1px solid #ccc;
+        background-color: #fff;
+    }
+
+    tr:nth-child(2n) {
+        background-color: #f8f8f8;
+    }
 
     thead {
       border-bottom: solid 2px rgba(210, 215, 217, 0.75);
