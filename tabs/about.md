@@ -139,7 +139,7 @@ order: 4
 * Tingsiverse
   * [https://www.thingiverse.com/mikeyu/designs](https://www.thingiverse.com/mikeyu/designs)
 * 邮箱
-  * qianchenzhumeng@live.cn
+  * [qianchenzhumeng@live.cn](javascript:window.open('mailto:' + ['qianchenzhumeng','live.cn'].join('@')))
 
 ## 其他
 
