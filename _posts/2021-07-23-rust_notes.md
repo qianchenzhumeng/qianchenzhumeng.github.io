@@ -325,6 +325,187 @@ ar = "arm-linux-gnueabihf-ar"
 # rustflags = ["-C", "target-feature=+crt-static"]
 ```
 
+## 7. FFI(C)
+
+### (1) 0 长度数组的处理
+
+C 语言中结构体中长度为 0 的数组，在 Rust 中表示时可以将其定义为 `*const *const` 类型的指针，原因是对该内存区域内数据的解释方式要一致，定义为其他类型会造成解释方式不一致，引发乱七八糟的问题。关于 C 语言中 0 长度数组的解释，可以参照《[浅析长度为0的数组](https://www.cnblogs.com/felove2013/articles/4050226.html)》。
+
+例如 libusb-1.0.24 中 BOS 描述符的结构体，由于能力描述符的大小无法在编译时确定，从而整个结构体的大小也无法在编译时确定，因此使用了长度为 0 的数组占位，后续使用中根据 `bNumDeviceCaps` 来分配内存空间，后面的内存是当指针数据来使用的：
+
+```c
+// BOS 描述符结构体
+struct libusb_bos_descriptor {
+	uint8_t  bLength;
+	uint8_t  bDescriptorType;
+	uint16_t wTotalLength;
+	uint8_t  bNumDeviceCaps;
+	struct libusb_bos_dev_capability_descriptor *dev_capability[ZERO_SIZED_ARRAY];
+};
+
+// 代码片段
+static int parse_bos(struct libusb_context *ctx,
+	struct libusb_bos_descriptor **bos,
+	const uint8_t *buffer, int size)
+{
+	struct libusb_bos_descriptor *_bos;
+	/* ... */
+	/* 这个地方根据描述符中的设备能力数来为 BOS 描述符分配内存空间 */
+	_bos = calloc(1, sizeof(*_bos) + bos_desc->bNumDeviceCaps * sizeof(void *));
+	if (!_bos)
+		return LIBUSB_ERROR_NO_MEM;
+	/* ... */
+    /* dev_capability 数组保存每个能力描述符所在内存的地址 */
+    _bos->dev_capability[i] = malloc(header->bLength);
+}
+```
+
+libusb 的 Rust 绑定，[libusb-sys v0.2.3](https://github.com/dcuddeback/libusb-sys/tree/v0.2.3) 放弃了对能力描述符的解释，能力描述符中的 `Capability-Dependent` 字段的数据长度也一并放弃了：
+
+```rust
+#[allow(non_snake_case)]
+#[repr(C)]
+pub struct libusb_bos_dev_capability_descriptor {
+    pub bLength: u8,
+    pub bDescriptorType: u8,
+    pub bDevCapabilityType: u8,
+    // 这个位置应该是 Capability-Dependent 字段的数据
+}
+
+#[allow(non_snake_case)]
+#[repr(C)]
+pub struct libusb_bos_descriptor {
+    pub bLength: u8,
+    pub bDescriptorType: u8,
+    pub wTotalLength: u16,
+    pub bNumDeviceCaps: u8,
+    // 这个位置应该是说有的能力描述符开始的内存区域
+}
+```
+
+按照前面说的，在 Rust 中可以将 C 中 0 长度数组的结构体成员定义为 `*const *const` 类型：
+
+```rust
+#[allow(non_snake_case)]
+#[repr(C)]
+pub struct libusb_bos_dev_capability_descriptor {
+    pub bLength: u8,
+    pub bDescriptorType: u8,
+    pub bDevCapabilityType: u8,
+    pub dev_capability_data: *const *const u8,
+}
+
+#[allow(non_snake_case)]
+#[repr(C)]
+pub struct libusb_bos_descriptor {
+    pub bLength: u8,
+    pub bDescriptorType: u8,
+    pub wTotalLength: u16,
+    pub bNumDeviceCaps: u8,
+    pub dev_capability: *const *const libusb_bos_dev_capability_descriptor,
+}
+```
+
+在调用该结构体的地方，先使用 `std::ptr::addr_of!` 或 `std::ptr::addr_of_mut!` 宏将定义的 `*const *const T` 类型的成员转换为指针，然后在进行两次解引用。对于数组的处理方式，可以调用指针的 `.offset()` 方法完成类似数组索引的操作。例如：
+
+```rust
+pub fn dev_capability(&self) -> Vec<BosDevCapabilityDescriptor> {
+    unsafe {
+        let mut v: Vec<BosDevCapabilityDescriptor> = Vec::new();
+        for i in 0..self.num_device_caps() {
+            // 先转换成指针
+            let point = std::ptr::addr_of!((*self.descriptor).dev_capability).offset(i as _);
+            // 在将指针转换为 *const *const libusb_bos_dev_capability_descriptor，然后解引用两次
+            let dev_cap = &(*(*(point as * const *const libusb_bos_dev_capability_descriptor)));
+            let cap = BosDevCapabilityDescriptor {
+                addr: point as *const *const u8,
+                bLength: dev_cap.bLength,
+                bDescriptorType: dev_cap.bDescriptorType,
+                bDevCapabilityType: dev_cap.bDevCapabilityType,
+            };
+            v.push(cap);
+        }
+        v
+    }
+}
+```
+
+要确保两边的地址是一样的，因此，添加打印的方式很有用。Rust 打印地址的控制符是 `{:p}`，和 C 的 `%p` 类似，打印指针的内容，即指针所指向的区域的地址，可以参考《[rust:打印变量地址](https://blog.csdn.net/varding/article/details/48104893)》。
+
+Rust 中指针相关的操作，可以参考《[Interacting with data from FFI in Rust](https://blog.guillaume-gomez.fr/articles/2021-07-29+Interacting+with+data+from+FFI+in+Rust)》。
+
+关于，Rust FFI(C) 中复杂类型数据的处理，可以参考《[Rust与C交互(FFI)中复杂类型的处理](https://blog.csdn.net/guiqulaxi920/article/details/78653054)》。
+
+改用 `[*const libusb_bos_dev_capability_descriptor]` 类型的话，Windows 上会引发 `STATUS_HEAP_CORRUPTION` 或 `STATUS_ACCESS_VIOLATION` 错误，原因可能是 Rust 的数组和 C 中的数组在内存的使用上有区别，导致对同一块内存数据的解读方式不同。
+
+例如，如下程序，能取到正确的数据，但是程序会崩溃，错误码为(exit code: 0xc0000374, STATUS_HEAP_CORRUPTION)：
+
+```rust
+pub struct libusb_bos_descriptor {
+    pub bLength: u8,
+    pub bDescriptorType: u8,
+    pub wTotalLength: u16,
+    pub bNumDeviceCaps: u8,
+    // 错误是这一行引起的
+    pub dev_capability: [*const libusb_bos_dev_capability_descriptor],
+}
+
+pub fn dev_capability(&self) -> Vec<libusb_bos_dev_capability_descriptor> {
+    unsafe {
+        let mut v: Vec<libusb_bos_dev_capability_descriptor> = Vec::new();
+        for i in 0..self.num_device_caps() {
+            println!("&dev_capability[{}]: {:p}", i, &(*self.descriptor).dev_capability[i as usize]);
+            println!("dev_capability[{}]: {:p}", i, &(*((*self.descriptor).dev_capability)[i as usize]));
+            let dev_cap = &(*(*self.descriptor).dev_capability[i as usize]);
+
+            let cap = libusb_bos_dev_capability_descriptor {
+                bLength: dev_cap.bLength,
+                bDescriptorType: dev_cap.bDescriptorType,
+                bDevCapabilityType: dev_cap.bDevCapabilityType,
+                //dev_capability_data: dev_cap.dev_capability_data,
+            };
+            v.push(cap);
+        }
+        v
+    }
+}
+
+for cap in bos_desc.dev_capability() {
+    println!("      bLength:                 {}", cap.bLength);
+    println!("      bDescriptorType:         {}", cap.bDescriptorType);
+    println!("      bDevCapabilityType:      {}", cap.bDevCapabilityType);
+    //println!("      dev_capability_data:     {}", cap.dev_capability_data);
+}
+```
+
+下面的错误码是 (exit code: 0xc0000005, STATUS_ACCESS_VIOLATION)：
+
+```rust
+pub struct libusb_bos_descriptor {
+    pub bLength: u8,
+    pub bDescriptorType: u8,
+    pub wTotalLength: u16,
+    pub bNumDeviceCaps: u8,
+    // 错误是这一行引起的
+    pub dev_capability: [*const libusb_bos_dev_capability_descriptor],
+}
+
+pub fn dev_capability(&self) -> &[*const libusb_bos_dev_capability_descriptor] {
+    unsafe {
+        &(*self.descriptor).dev_capability
+    }
+}
+
+for cap in bos_desc.dev_capability() {
+    unsafe {
+        println!("      bLength:                 {}", (*(*cap)).bLength);
+        println!("      bDescriptorType:         {}", (*(*cap)).bDescriptorType);
+        println!("      bDevCapabilityType:      {}", (*(*cap)).bDevCapabilityType);
+        //println!("      dev_capability_data:     {}", cap.dev_capability_data);
+    }
+}
+```
+
 ## 参考
 
 [1] [https://rust-embedded.github.io/embedonomicon/custom-target.html#use-the-target-file](https://rust-embedded.github.io/embedonomicon/custom-target.html#use-the-target-file)
