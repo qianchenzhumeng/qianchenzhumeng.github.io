@@ -77,9 +77,53 @@ $$
 
 #### (2) 旋转矩阵
 
+特殊正交群：$3 \times 3$ 旋转矩阵组成的集合称为 **特殊正交群（special orthogonal group）SO(3)**，满足：
+
+$$
+R^TR=I \\
+det R=1
+$$
+
+旋转矩阵的特性：
+
+$$
+可逆性：R^{-1}=R^T \in SO(3) \\
+封闭性：R_1R_2 \in SO(3) \\
+结合律：(R_1R_2)R_3=R_1(R_2R_3) \\
+不满足交换律：R_1R_2 \ne R_2R_1 \\
+x \in \mathbb{R}^3,\Vert Rx \Vert=\Vert x \Vert
+$$
+
+旋转矩阵的用途：
+
+- 表示姿态
+- 变换参考坐标系
+- 旋转某一向量或坐标
+
 #### (3) 角速度
 
-#### (4) 转动的指数坐标
+反对称矩阵：给定向量 $x=[x_1,x_2,x_3]^T \in \mathbb{R}$，定义其反对称矩阵 $[x]$ 为：
+
+$$
+[x]=
+\begin{bmatrix}
+0 & -x_3 & x_2 \\
+x_3 & 0 & -x_1 \\
+-x_2 & x_1 & 0
+\end{bmatrix}
+$$
+
+反对称矩阵满足：
+
+$$
+[x]=-[x]^T
+$$
+
+所有 $3 \times 3$ 反对称矩阵的集合称为 $so(3)$。
+
+#### (4) 刚体转动的指数坐标
+
+旋转矩阵 $R$ 的指数坐标 $\hat{\omega}\theta \in \mathbb{R}^3$，其中，$\hat{\omega} \in \mathbb{R}^3$ 为单位转轴，$\theta \in \mathbb{R}$ 为绕转该轴线的转角。
 
 #### (5) 测验
 
@@ -485,7 +529,7 @@ print (matrix_log)
 
 #### (1) 齐次变换矩阵
 
-**特殊欧式群（special Eucliden group）SE(3)** 亦称 **刚体运动（rigid-body motion）群** 或 **齐次变换矩阵（homogeneous transformation matrice）群**，是所有 4x4 实矩阵 T 的集合：
+**特殊欧式群（special Euclidean group）SE(3)** 亦称 **刚体运动（rigid-body motion）群** 或 **齐次变换矩阵（homogeneous transformation matrice）群**，是所有 $4 \times 4$ 实矩阵 T 的集合：
 
 $$
 T=
@@ -506,8 +550,10 @@ r_{31} & r_{32} & r_{33} & p_{3} \\
 \right] \in SE(3)
 $$
 
+变换矩阵的特性：
+
 $$
-T^{-1}=
+可逆性：T^{-1}=
 \left[
 \begin{array}{1}
 R & p \\
@@ -520,7 +566,10 @@ R & p \\
 R^T & -R^Tp \\
 0 & 1
 \end{array}
-\right] \in SE(3)
+\right] \in SE(3) \\
+封闭性：T_1T_2 \in SE(3) \\
+结合律：(T_1T_2)T_3=T_1(T_2T_3) \\
+不满足交换律：T_1T_2 \ne T_2T_1
 $$
 
 齐次变换矩阵的用途：
@@ -557,4 +606,114 @@ V=
 v
 \end{bmatrix}
 =S\dot{\theta}
+$$
+
+变换矩阵 T 的伴随变换矩阵（adjoint representation）：
+
+$$
+[Ad_T]=
+\left[
+\begin{array}{1}
+R & 0 \\
+[p]R & R
+\end{array}
+\right] \in \mathbb{R}^{6 \times 6}
+$$
+
+遵循下标消减的原则：
+
+$$
+\mathcal{V_a}=[Ad_{T_{ab}}]\mathcal{V_b}\\
+\mathcal{S_a}=[Ad_{T_{ab}}]\mathcal{S_b}
+$$
+
+物体运动旋量（$\mathcal{S}$ 在 {b} 中表示）：
+
+$$
+\mathcal{V_b}=(\omega_b,v_b)=\mathcal{S}\dot{\theta}
+$$
+
+物体运动旋量的矩阵表示：
+
+$$
+[\mathcal{V_b}]=T^{-1}\dot{T}
+=
+\left[
+\begin{array}{1}
+[\mathcal{\omega_b}] & \mathcal{v_b} \\
+0 & 0
+\end{array}
+\right] \in \mathcal{se}(3)
+$$
+
+空间运动旋量（$\mathcal{S}$ 在 {s} 中表示）：
+
+$$
+\mathcal{V_s}=(\omega_s,v_s)=\mathcal{S}\dot{\theta}
+$$
+
+空间运动旋量的矩阵表示：
+
+$$
+[\mathcal{V_s}]=\dot{T}T^{-1}=
+\begin{bmatrix}
+[\mathcal{\omega_s}] & \mathcal{v_s} \\
+0 & 0
+\end{bmatrix} \in \mathcal{se}(3)
+$$
+
+所有左上角为 $3 \times 3 \ so(3)$ 矩阵且最后一行为 4 个 0 的 $4 \times 4$ 实矩阵的集合被称为 $se(3)$。 
+
+#### (3) 刚体运动的指数坐标
+
+定义齐次变换矩阵 $T$ 的六维指数坐标 $S\theta \in \mathbb{R}^6$，其中，$S  \in \mathbb{R}^6$ 为旋转轴，$\theta \in \mathbb{R}$ 为沿旋转轴将 $I$ 的原点移动到 $T$ 的原点的距离。
+
+指数坐标 $\mathcal{S\theta} \in \mathbb{R}^6$ 的矩阵表示为：
+
+$$
+[S]=
+\begin{bmatrix}
+[\omega] & v \\
+0 & 0
+\end{bmatrix} \in se(3)
+$$
+
+
+矩阵指数 $e^{[\mathcal{S}]\theta} \in SE(3)$ 和 矩阵对数 $[\mathcal{S}]\theta \in se(3)$：
+
+$$
+exp: [\mathcal{S}]\theta \in se(3) \to T \in SE(3) \\
+log: T \in SE(3) \to [\mathcal{S}]\theta \in se(3)
+$$
+
+如果 $S_\omega=0,\Vert S_v \Vert=1$：
+
+$$
+e^{[S]\theta}=
+\begin{bmatrix}
+I & \mathcal{S_v\theta} \\
+0 & 1
+\end{bmatrix}
+$$
+
+如果 $\Vert S_\omega \Vert=1$：
+
+$$
+e^{[S]\theta}=
+\begin{bmatrix}
+e^{[S_\omega]\theta} & (I\theta+(1-\cos\theta)[S_\omega]+(\theta-\sin\theta)[S_\omega]^2)S_v \\
+0 & 1
+\end{bmatrix}
+$$
+
+对于 {b} 通过 S 移动到 {b'}，如果 S 在 {b} 中表示：
+
+$$
+T_{sb'}=T_{sb}e^{[S_b]\theta}
+$$
+
+如果 S 在 {s} 中表示：
+
+$$
+T_{sb'}=e^{[S_s]\theta}T_{sb}
 $$
