@@ -608,7 +608,7 @@ v
 =S\dot{\theta}
 $$
 
-变换矩阵 T 的伴随变换矩阵（adjoint representation）：
+变换矩阵 T 的伴随变换矩阵（adjoint representation）$[Ad_T]$：
 
 $$
 [Ad_T]=
@@ -620,15 +620,20 @@ R & 0 \\
 \right] \in \mathbb{R}^{6 \times 6}
 $$
 
-遵循下标消减的原则：
+对于任意两个坐标系 {a} 与 {b}，运动旋量之间的关系为：
 
 $$
-\mathcal{V_a}=[Ad_{T_{ab}}]\mathcal{V_b}\\
+\mathcal{V_a}=[Ad_{T_{ab}}]\mathcal{V_b}
+$$
+
+两个不同坐标系 {a} 与 {b} 中所描述的螺旋轴之间的映射关系：
+
+$$
 \mathcal{S_a}=[Ad_{T_{ab}}]\mathcal{S_b}
 $$
 
-物体运动旋量（$\mathcal{S}$ 在 {b} 中表示）：
 
+物体运动旋量（$\mathcal{S}$ 在 {b} 中表示）：
 $$
 \mathcal{V_b}=(\omega_b,v_b)=\mathcal{S}\dot{\theta}
 $$
@@ -716,4 +721,33 @@ $$
 
 $$
 T_{sb'}=e^{[S_s]\theta}T_{sb}
+$$
+
+#### (4) 力旋量
+
+考虑作用在刚体上的一点 r 的纯力 f。定义参考坐标系 {a}，点 r 可表示为 $r_a \in \mathbb{R}^3$，力 f 可表示为 $f_a \in \mathbb{R}^3$。该力产生的力矩（torque）或力偶（moment）$m_a \in \mathbb{R}^3$ 可表示为：
+
+$$
+m_a = r_a \times f_a
+$$
+
+力旋量（wrench）：
+
+$$
+\mathcal{F}_a=
+\begin{bmatrix}
+m_a\\
+f_a
+\end{bmatrix} \in \mathbb{R}^6
+$$
+
+$\mathcal{F_s}$ 与 $\mathcal{F_b}$ 的关系推导：
+
+$$
+\begin{aligned}
+\mathcal{V_s}^T\mathcal{F_s} &= \mathcal{V_b}^T\mathcal{F_b}=power\\
+\mathcal{V_s}^T\mathcal{F_s} &= ([A_{dT_{bs}}]\mathcal{V_s})^T\mathcal{F_b}\\
+\mathcal{V_s}^T\mathcal{F_s} &= \mathcal{V_s}^T[A_{dT_{bs}}]^T\mathcal{F_b}\\
+\mathcal{F_s}&=[A_{dT_{bs}}]^TF_b
+\end{aligned}
 $$
