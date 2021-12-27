@@ -116,6 +116,7 @@ order: 4
 - 全国计算机等级考试四级（网络工程师）合格证书
 - 全国计算机等级考试二级（C）合格证书
 - Coursera Certificate
+  - [Modern Robotics, Course 1:  Foundations of Robot Motion](https://coursera.org/share/58cfda412aa60cf27b070a650a76da6f)
   - [Java 程序设计：使用软件解题](https://www.coursera.org/account/accomplishments/certificate/UFEESK5Y37WB)
   - [Embedded Hardware and Operating Systems](https://www.coursera.org/account/accomplishments/certificate/P2KRR4PZ6DWY)
   - [Machine Learning](https://www.coursera.org/account/accomplishments/certificate/BXN9Q8SUXN5H)
