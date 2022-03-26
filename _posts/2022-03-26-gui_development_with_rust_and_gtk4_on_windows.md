@@ -178,3 +178,4 @@ fn main() {
 
 [2] [GUI development with Rust and GTK 4](https://gtk-rs.org/gtk4-rs/stable/latest/book)
 
+[3] [Getting Started With Rust and GTK](https://blog.sb1.io/getting-started-with-rust-and-gtk/?msclkid=dd878f97acb911ec93ffe9c1b8ba854f)
