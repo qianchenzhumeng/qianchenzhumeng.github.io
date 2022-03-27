@@ -52,7 +52,7 @@ cargo new gtk-app
 gtk4 = "0.4.7"
 ```
 
-`src/main.rs` 中输入以下内容：
+`gtk-app/src/main.rs` 中输入以下内容：
 
 ```rust
 use gtk4::prelude::*;
@@ -73,7 +73,7 @@ fn main() {
 
 打开 Glade，创建一个应用窗体，将设计文件保存为 `main_window.glade`，放到 `gtk-app/resources` 目录内。
 
-`resources/main_window.glade` 文件内容如下：
+`gtk-app/resources/main_window.glade` 文件内容如下：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -90,7 +90,7 @@ fn main() {
 </interface>
 ```
 
-修改 `src/main.rs`，从设计文件中创建窗体：
+修改 `gtk-app/src/main.rs`，从设计文件中创建窗体：
 
 ```rust
 use gtk4::prelude::*;
@@ -115,9 +115,11 @@ fn main() {
 }
 ```
 
+实测使用 Glade 生成的 xml 文件中，有些属性或标签是无法被 `gtk4::Builder` 识别的（例如 `GtkApplicationWindow.window-position` 属性和 `packing` 标签），会导致程序无法运行。
+
 ## 4. 使用资源绑定
 
-在 `resources` 目录下创建 `resources.xml` 文件：
+在目录下创建 `gtk-app/resources/resources.xml` 文件：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -128,13 +130,26 @@ fn main() {
 </gresources>
 ```
 
-进入 `resources` 目录，运行如下命令编译资源：
+进入 `gtk-app/resources` 目录，运行如下命令编译资源：
 
 ```powershell
 glib-compile-resources.exe .\resources.xml
 ```
 
 同目录下会生成 `resources.gresource` 文件。
+
+在项目根目录下创建构建脚本 `build.rs`，以便执行 `Cargo build` 或 `Cargo run` 命令时自动编译资源：
+
+```rust
+use std::process::Command;
+
+fn main() {
+    let _ = Command::new("cmd")
+                        .args(&["/C", "cd resources && glib-compile-resources resources.xml"])
+                        .output()
+                        .expect("failed to execute process");
+}
+```
 
 在 `Cargo.toml` 中增加依赖：
 
@@ -171,6 +186,12 @@ fn main() {
     app.run();
 }
 ```
+
+## 5. 总结
+
+本来想使用 Glade 完成界面设计，但是使用过程中发现 Glade 生成的 xml 文件中，并不是所有的属性和标签都能被 Gtk4:Builer 识别。除此以外，编译生成的可执行文件启动速度也表较慢。
+
+因此，个人感觉，使用 Rust 和 GTK4 组合进行 Windows 上 GUI 开发，不是个很好的方案。
 
 ## 参考
 
