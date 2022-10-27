@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="zh-CN" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="pv-cache-enabled" content="false"><meta name="generator" content="Jekyll v4.2.0" /><meta property="og:title" content="芒果派 MQ-R F133 开发指南" /><meta name="author" content="前尘逐梦" /><meta property="og:locale" content="zh_CN" /><meta name="description" content="最近入手了一块带有 WIFI 模块的芒果派 MQ-R F133 开发板，这个开发板很小巧，可以运行全志的 Tina-Linux，打算将之前用 Rust 开发的网关应用 iot_gw 移植到这个上面，这篇博客主要用于记录移植的过程。" /><meta property="og:description" content="最近入手了一块带有 WIFI 模块的芒果派 MQ-R F133 开发板，这个开发板很小巧，可以运行全志的 Tina-Linux，打算将之前用 Rust 开发的网关应用 iot_gw 移植到这个上面，这篇博客主要用于记录移植的过程。" /><link rel="canonical" href="https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" /><meta property="og:url" content="https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" /><meta property="og:site_name" content="前尘逐梦" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-10-17T00:04:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="芒果派 MQ-R F133 开发指南" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"author":{"@type":"Person","name":"前尘逐梦"},"description":"最近入手了一块带有 WIFI 模块的芒果派 MQ-R F133 开发板，这个开发板很小巧，可以运行全志的 Tina-Linux，打算将之前用 Rust 开发的网关应用 iot_gw 移植到这个上面，这篇博客主要用于记录移植的过程。","headline":"芒果派 MQ-R F133 开发指南","dateModified":"2022-10-17T00:30:51+08:00","datePublished":"2022-10-17T00:04:00+08:00","url":"https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/"},"@context":"https://schema.org"}</script><title>芒果派 MQ-R F133 开发指南 | 前尘逐梦</title><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon.png"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon-precomposed.png"><link rel="apple-touch-icon" sizes="57x57" href="/assets/img/favicons/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/favicons/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicons/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/assets/img/favicons/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicons/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/img/favicons/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/assets/img/favicons/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/favicons/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/manifest.json"><meta name='msapplication-config' content='/assets/img/favicons/browserconfig.xml'><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/assets/img/favicons/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="cdn.jsdelivr.net"><link rel="dns-prefetch" href="cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha256-LA89z+k9fjgMKQ/kq4OO2Mrf8VltYml/VES+Rg0fh20=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id="></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', ''); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="https://cdn.jsdelivr.net/gh/cotes2020/chirpy-images/commons/avatar.jpg" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">前尘逐梦</a></div><div class="site-subtitle font-italic"></div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/qianchenzhumeng" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['qianchenzhumeng','live.cn'].join('@')" aria-label="email" class="order-4" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-5" > <i class="fas fa-rss"></i> </a> <a href="https://www.thingiverse.com/mikeyu/designs" aria-label="" class="order-6" target="_blank" rel="noopener"> <i class="fas fa-cube"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>芒果派 MQ-R F133 开发指南</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>芒果派 MQ-R F133 开发指南</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Mon, Oct 17, 2022, 12:04 AM +0800" > Oct 17 <i class="unloaded">2022-10-17T00:04:00+08:00</i> </span> by <span class="author"> 前尘逐梦 </span></div><div> <span> Updated <span class="timeago lastmod" data-toggle="tooltip" data-placement="bottom" title="Mon, Oct 17, 2022, 12:30 AM +0800" > Oct 17 <i class="unloaded">2022-10-17T00:30:51+08:00</i> </span> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="1978 words">10 min</span></div></div><div class="post-content"><h2 id="1-开发环境搭建">1. 开发环境搭建</h2><p>搭建开发环境比较简单，芒果派 <a href="https://github.com/mangopi-sbc/Tina-Linux">Tina-Linux</a> 代码库的自述文件中有在 Ubuntu18.04 上搭建 F133 开发环境的的指导，唯一比较折磨人的问题是下载 SDK 的时间比较久。</p><p>如果是在 WSL 中搭建开发环境，需要注意以下两个问题：</p><ul><li>注意不要将 Tina-Linux 随意放置在 C 盘、D 盘等位置上，实测这样做的时候，即使对应目录开启了大小写敏感，编译时也会发生莫名其妙的问题。需要放置在 WSL 用户的家目录下，编译才能正常进行。<li>确保 WSL 的版本是 2。编译打包的过程会调用一些工具，有一部分工具是 32 位的，WSL1 不支持运行 32 位程序，需要升级为 WSL2。</ul><p>WSL1 升级到 WSL2：</p><div class="language-powershell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="c"># 查看名称和版本号</span><span class="w">
+</span><span class="n">wsl</span><span class="w"> </span><span class="nt">-l</span><span class="w"> </span><span class="nt">-v</span><span class="w">
+</span></pre></table></code></div></div><p>比如：</p><div class="language-powershell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="w">  </span><span class="n">NAME</span><span class="w">            </span><span class="nx">STATE</span><span class="w">           </span><span class="nx">VERSION</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="n">Ubuntu</span><span class="w">          </span><span class="nx">Running</span><span class="w">         </span><span class="nx">1</span><span class="w">
+  </span><span class="n">Ubuntu-18.04</span><span class="w">    </span><span class="nx">Stopped</span><span class="w">         </span><span class="nx">2</span><span class="w">
+</span></pre></table></code></div></div><p>设置版本：</p><div class="language-powershell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="n">wsl</span><span class="w"> </span><span class="nt">--set-version</span><span class="w"> </span><span class="nx">Ubuntu</span><span class="w"> </span><span class="nx">2</span><span class="w">
+</span></pre></table></code></div></div><p>等个几分钟就可以了。</p><h2 id="2-使能-uart1">2. 使能 uart1</h2><p>默认只有 uart0 使能了，用作 linux 的控制台。开发板上电后，可以在 <code class="language-plaintext highlighter-rouge">/dev</code> 目录下看到：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>root@TinaLinux:/# <span class="nb">ls</span> <span class="nt">-l</span> /dev/tty<span class="k">*</span>
+crw-rw-rw-    1 root     root        5,   0 Jan  1 00:00 /dev/tty
+crw-------    1 root     root      249,   0 Jan  1 00:00 /dev/ttyS0
+</pre></table></code></div></div><p>网关 <a href="https://github.com/qianchenzhumeng/iot_gw">iot_gw</a> 需要使用串口和 Arduino 交互，因此，需要占用一个串口，计划使用 uart1。需要做两件事情：</p><ul><li>使能 uart1。<li>确定 uart1 对应的引脚。</ul><p>需要编辑设备树文件，使能 uart1：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>~/Tina-Linux<span class="nv">$ </span>vim ./device/config/chips/f133/configs/mq_r/board.dts
+</pre></table></code></div></div><p>找到 uart1 的配置：</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>&amp;uart1 {
+        pinctrl-names = "default", "sleep";
+        pinctrl-0 = &lt;&amp;uart1_pins_a&gt;;
+        pinctrl-1 = &lt;&amp;uart1_pins_b&gt;;
+        status = "disabled";
+};
+</pre></table></code></div></div><p>修改状态：</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>&amp;uart1 {
+        pinctrl-names = "default", "sleep";
+        pinctrl-0 = &lt;&amp;uart1_pins_a&gt;;
+        pinctrl-1 = &lt;&amp;uart1_pins_b&gt;;
+        status = "okay";
+};
+</pre></table></code></div></div><p>单看开发板原理图，可以看到很多引脚都可以做为 uart1 使用，具体是哪个引脚，需要查看设备树文件。</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre>        uart1_pins_a: uart1_pins@0 {  /* For EVB1 board */
+                pins = "PG6", "PG7", "PG8", "PG9";
+                function = "uart1";
+                drive-strength = &lt;10&gt;;
+                bias-pull-up;
+        };
+
+        uart1_pins_b: uart1_pins {  /* For EVB1 board */
+                pins = "PG6", "PG7", "PG8", "PG9";
+                function = "gpio_in";
+        };
+</pre></table></code></div></div><p>从上面的内容可以看到，uart1 对应的引脚是 PG6、PG7、PG8、PG9，结合开发板原理图可知，UART1-TX 是 PG6，UART1_RX 是 PG7。</p><p>接下来，编译、打包、烧录即可。开发板运行起来后，就可以在 ‘/dev’ 目录下看到 uart1</p><p>了：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>root@TinaLinux:/# <span class="nb">ls</span> <span class="nt">-l</span> /dev/tty<span class="k">*</span>
+crw-rw-rw-    1 root     root        5,   0 Jan  1 00:00 /dev/tty
+crw-------    1 root     root      249,   0 Jan  1 00:00 /dev/ttyS0
+crw-------    1 root     root      249,   1 Jan  1 00:00 /dev/ttyS1
+</pre></table></code></div></div><h2 id="3-rust-串口编程">3. Rust 串口编程</h2><p>网关 <a href="https://github.com/qianchenzhumeng/iot_gw">iot_gw</a> 是用 Rust 写的，操作串口借助了 <a href="https://crates.io/crates/serial">serial</a> 库，这个库使用了 <a href="https://crates.io/crates/termios">termios</a> 库和 <a href="https://crates.io/crates/ioctl-rs">ioctl-rs</a> 库（三个库的开发者是同一个人），之前在为 <code class="language-plaintext highlighter-rouge">mips-unknown-linux-uclibc</code> 开发这个网关程序时，发现不同的 linux 发行版，ioctl 接口同一命令号对应的命令含义并不相同，因此，编译网关应用前还得单独处理这三个库，才能确保应用能够正确操作串口，很麻烦。</p><p>计划试一试另一个串口库 <a href="https://crates.io/crates/serialport">serialport</a>。这个库的介绍页面提到，工作在 Linux 上时，这个库提供的串口枚举功能是使用 <code class="language-plaintext highlighter-rouge">glibc</code> 实现的，借助了 <code class="language-plaintext highlighter-rouge">libudev</code>，如果使用这个特性，仍然可以枚举串口，但是可能无法获得比较丰富的信息，并且也可能返回一些物理上不存在的串口。这个特性在网关上用不到，不过，本着钻研的目的，编译网关应用时还是不要关闭该特性。</p><p>使用 <a href="https://crates.io/crates/serialport">serialport</a> 提供的 <code class="language-plaintext highlighter-rouge">list_ports</code> 示例创建 rust 工程，为工程添加 <code class="language-plaintext highlighter-rouge">riscv64gc-unknown-linux-gnu</code> 目标编译配置：</p><div class="language-toml highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># .cargo/config.toml</span>
+<span class="nn">[target.riscv64gc-unknown-linux-gnu]</span>
+<span class="py">linker</span> <span class="p">=</span> <span class="s">"riscv64-unknown-linux-gnu-gcc"</span>
+<span class="py">ar</span> <span class="p">=</span> <span class="s">"riscv64gc-unknown-linux-gnu-ar"</span>
+</pre></table></code></div></div><p>创建编译脚本 <code class="language-plaintext highlighter-rouge">build_f133.sh</code>：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="c">#!/bin/bash</span>
+
+<span class="c"># 注意，将 HOME 替换为实际的路径</span>
+<span class="nv">HOME</span><span class="o">=</span><span class="s2">"/home/dell"</span>
+<span class="nv">TARGET</span><span class="o">=</span><span class="s2">"riscv64gc-unknown-linux-gnu"</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"riscv64-unknown-linux-gnu-gcc"</span>
+<span class="nv">TOOLCHAIN</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/toolchain
+
+<span class="nb">export </span><span class="nv">CC_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CC</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$TOOLCHAIN</span>/bin
+
+cargo build <span class="nt">--target</span><span class="o">=</span><span class="nv">$TARGET</span> <span class="nt">-vv</span>
+</pre></table></code></div></div><p>接下来，赋予该脚本执行权限，并运行：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nb">chmod</span> +x build_f133.sh
+./build_f133.sh
+</pre></table></code></div></div><p>很遗憾，报错了：</p><blockquote><p>[libudev-sys 0.1.4] thread ‘main’ panicked at ‘called <code class="language-plaintext highlighter-rouge">Result::unwrap()</code> on an <code class="language-plaintext highlighter-rouge">Err</code> value: “pkg-config has not been configured to support cross-compilation.\n\nInstall a sysroot for the target platform and configure it via\nPKG_CONFIG_SYSROOT_DIR and PKG_CONFIG_PATH, or install a\ncross-compiling wrapper for pkg-config and set it via\nPKG_CONFIG environment variable.”’, /home/dell/.cargo/registry/src/mirrors.ustc.edu.cn-12df342d903acd47/libudev-sys-0.1.4/build.rs:38:41 [libudev-sys 0.1.4] note: run with <code class="language-plaintext highlighter-rouge">RUST_BACKTRACE=1</code> environment variable to display a backtrace error: failed to run custom build command for <code class="language-plaintext highlighter-rouge">libudev-sys v0.1.4</code></p></blockquote><p>找不到 <code class="language-plaintext highlighter-rouge">libudev</code> 的 <code class="language-plaintext highlighter-rouge">pkg-config</code> 配置文件。</p><p>先在 SDK 中 <code class="language-plaintext highlighter-rouge">make menuconfig</code>， 使能 <code class="language-plaintext highlighter-rouge">eudev</code> ，编译出 <code class="language-plaintext highlighter-rouge">libudev</code> 看一看能不能产生 <code class="language-plaintext highlighter-rouge">pkg-config</code> 配置文件：</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>    Base system  ---&gt;
+		&lt;*&gt; eudev................................ Dynamic device management subsystem  ---&gt;
+</pre></table></code></div></div><p>编译完成之后，可以看到生成了 <code class="language-plaintext highlighter-rouge">libudev</code> 的 <code class="language-plaintext highlighter-rouge">pkg-config</code> 配置文件：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>~/Tina-Linux<span class="nv">$ </span><span class="nb">ls</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/pkgconfig
+alsa.pc     ext2fs.pc     libcares.pc   libcurl.pc   libiptc.pc     libpng.pc    libudev.pc  openssl.pc    uuid.pc
+blkid.pc    freetype2.pc  libconfig.pc  libip4tc.pc  libnghttp2.pc  libpng12.pc  lua.pc      smartcols.pc  xtables.pc
+com_err.pc  json-c.pc     libcrypto.pc  libip6tc.pc  libnl-tiny.pc  libssl.pc    mount.pc    speexdsp.pc   zlib.pc
+</pre></table></code></div></div><p>修改编译脚本，通过环境变量指定 <code class="language-plaintext highlighter-rouge">pkg-config</code> 配置文件目录，并使能 <code class="language-plaintext highlighter-rouge">pkg-config</code> 交叉编译：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre><span class="c">#!/bin/bash</span>
+
+<span class="c"># 注意，将 HOME 替换为实际的路径</span>
+<span class="nv">HOME</span><span class="o">=</span><span class="s2">"/home/dell"</span>
+<span class="nv">TARGET</span><span class="o">=</span><span class="s2">"riscv64gc-unknown-linux-gnu"</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"riscv64-unknown-linux-gnu-gcc"</span>
+<span class="nv">TOOLCHAIN</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/toolchain
+<span class="nv">STRIP</span><span class="o">=</span>riscv64-unknown-linux-gnu-strip
+
+<span class="nb">export </span><span class="nv">PKG_CONFIG_LIBDIR</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/pkgconfig
+<span class="nb">export </span><span class="nv">PKG_CONFIG_ALLOW_CROSS</span><span class="o">=</span>1
+<span class="nb">export </span><span class="nv">CC_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CC</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$TOOLCHAIN</span>/bin
+
+cargo build <span class="nt">--target</span><span class="o">=</span><span class="nv">$TARGET</span> <span class="nt">-vv</span>
+</pre></table></code></div></div><p>接下来还是报错，找不到头文件 <code class="language-plaintext highlighter-rouge">zlib.h</code>：</p><blockquote><p>cargo:warning=In file included from libgit2/src/attr_file.c:11: cargo:warning=libgit2/src/filebuf.h:14:10: fatal error: zlib.h: No such file or directory cargo:warning= #include <zlib.h> cargo:warning= ^~~~~~~~ cargo:warning=compilation terminated.</zlib.h></p></blockquote><p>修改编译脚本，指定头文件搜索路径：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre><span class="c">#!/bin/bash</span>
+
+<span class="c"># 注意，将 HOME 替换为实际的路径</span>
+<span class="nv">HOME</span><span class="o">=</span><span class="s2">"/home/dell"</span>
+<span class="nv">TARGET</span><span class="o">=</span><span class="s2">"riscv64gc-unknown-linux-gnu"</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"riscv64-unknown-linux-gnu-gcc"</span>
+<span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="nv">$HOME</span><span class="s2">/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/include"</span>
+<span class="nv">TOOLCHAIN</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/toolchain
+<span class="nv">STRIP</span><span class="o">=</span>riscv64-unknown-linux-gnu-strip
+
+<span class="nb">export </span><span class="nv">PKG_CONFIG_LIBDIR</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/pkgconfig
+<span class="nb">export </span><span class="nv">PKG_CONFIG_ALLOW_CROSS</span><span class="o">=</span>1
+<span class="nb">export </span><span class="nv">CC_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CC</span>
+<span class="nb">export </span><span class="nv">CFLAGS_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CFLAGS</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$TOOLCHAIN</span>/bin
+
+cargo build <span class="nt">--target</span><span class="o">=</span><span class="nv">$TARGET</span> <span class="nt">-vv</span>
+</pre></table></code></div></div><p>链接时报错，找不到 <code class="language-plaintext highlighter-rouge">-lz</code> 及 <code class="language-plaintext highlighter-rouge">-ludev</code>：</p><blockquote><p>= note: /home/dell/Tina-Linux/prebuilt/gcc/linux-x86/riscv/toolchain-thead-glibc/riscv64-glibc-gcc-thead_20200702/bin/../lib/gcc/riscv64-unknown-linux-gnu/8.1.0/../../../../riscv64-unknown-linux-gnu/bin/ld: cannot find -lz /home/dell/Tina-Linux/prebuilt/gcc/linux-x86/riscv/toolchain-thead-glibc/riscv64-glibc-gcc-thead_20200702/bin/../lib/gcc/riscv64-unknown-linux-gnu/8.1.0/../../../../riscv64-unknown-linux-gnu/bin/ld: cannot find -ludev collect2: error: ld returned 1 exit status</p></blockquote><p>修改编译脚本，指定 <code class="language-plaintext highlighter-rouge">ld</code> 的搜索路径：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre><td class="rouge-code"><pre><span class="c">#!/bin/bash</span>
+
+<span class="c"># 注意，将 HOME 替换为实际的路径</span>
+<span class="nv">HOME</span><span class="o">=</span><span class="s2">"/home/dell"</span>
+<span class="nv">TARGET</span><span class="o">=</span><span class="s2">"riscv64gc-unknown-linux-gnu"</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"riscv64-unknown-linux-gnu-gcc"</span>
+<span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="nv">$HOME</span><span class="s2">/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/include"</span>
+<span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="nv">$HOME</span><span class="s2">/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib"</span>
+<span class="nv">TOOLCHAIN</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/toolchain
+<span class="nv">STRIP</span><span class="o">=</span>riscv64-unknown-linux-gnu-strip
+
+<span class="nb">export </span><span class="nv">PKG_CONFIG_LIBDIR</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/pkgconfig
+<span class="nb">export </span><span class="nv">PKG_CONFIG_ALLOW_CROSS</span><span class="o">=</span>1
+<span class="nb">export </span><span class="nv">CC_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CC</span>
+<span class="nb">export </span><span class="nv">CFLAGS_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CFLAGS</span>
+<span class="nb">export </span><span class="nv">LDFLAGS_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$LDFLAGS</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$TOOLCHAIN</span>/bin
+
+cargo build <span class="nt">--target</span><span class="o">=</span><span class="nv">$TARGET</span> <span class="nt">-vv</span>
+</pre></table></code></div></div><p>没起作用，仍旧报上述错误，但是编译输出信息中可以看到，上述操作生效了：</p><blockquote><p>“-L” “ /home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib”</p></blockquote><p>找不到的 <code class="language-plaintext highlighter-rouge">和</code> 在 <code class="language-plaintext highlighter-rouge">~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/</code> 是存在的：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="nb">ls</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev<span class="k">*</span>
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so.1
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so.1.6.3
+<span class="nb">ls</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libz.<span class="k">*</span>
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libz.a
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libz.so
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libz.so.1
+/home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libz.so.1.2.8
+</pre></table></code></div></div><p>不知道为啥还是找不到，干脆为这两个库创建软链接（不知道为啥会调到 <code class="language-plaintext highlighter-rouge">prebuilt</code> 目录中的工具）：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># 创建 libudev.so 的软链接</span>
+<span class="nb">ln</span> <span class="nt">-s</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so ~/Tina-Linux/prebuilt/gcc/linux-x86/riscv/toolchain-thead-glibc/riscv64-glibc-gcc-thead_20200702/riscv64-unknown-linux-gnu/lib/libudev.so
+<span class="c"># 创建 libz.so 的软链接</span>
+<span class="nb">ln</span> <span class="nt">-s</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libz.so ~/Tina-Linux/prebuilt/gcc/linux-x86/riscv/toolchain-thead-glibc/riscv64-glibc-gcc-thead_20200702/riscv64-unknown-linux-gnu/lib/libz.so
+</pre></table></code></div></div><p>删掉刚才在编译脚本中添加的链接标志：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre><span class="c">#!/bin/bash</span>
+
+<span class="c"># 注意，将 HOME 替换为实际的路径</span>
+<span class="nv">HOME</span><span class="o">=</span><span class="s2">"/home/dell"</span>
+<span class="nv">TARGET</span><span class="o">=</span><span class="s2">"riscv64gc-unknown-linux-gnu"</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"riscv64-unknown-linux-gnu-gcc"</span>
+<span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="nv">$HOME</span><span class="s2">/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/include"</span>
+<span class="nv">TOOLCHAIN</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/toolchain
+<span class="nv">STRIP</span><span class="o">=</span>riscv64-unknown-linux-gnu-strip
+
+<span class="nb">export </span><span class="nv">PKG_CONFIG_LIBDIR</span><span class="o">=</span>~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/pkgconfig
+<span class="nb">export </span><span class="nv">PKG_CONFIG_ALLOW_CROSS</span><span class="o">=</span>1
+<span class="nb">export </span><span class="nv">CC_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CC</span>
+<span class="nb">export </span><span class="nv">CFLAGS_riscv64gc_unknown_linux_gnu</span><span class="o">=</span><span class="nv">$CFLAGS</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$TOOLCHAIN</span>/bin
+
+cargo build <span class="nt">--target</span><span class="o">=</span><span class="nv">$TARGET</span> <span class="nt">-vv</span>
+</pre></table></code></div></div><p>再编译就顺利通过了。</p><p>将编译出的二进制文件放到开发板上运行时，会报找不到 <code class="language-plaintext highlighter-rouge">libudev</code>，需要将 <code class="language-plaintext highlighter-rouge">~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib</code> 目录下的 <code class="language-plaintext highlighter-rouge">libudev</code> 上传到开发板上去。总共有三个文件：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="nb">ls</span> <span class="nt">-l</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so<span class="k">*</span>
+lrwxrwxrwx 1 dell dell     16 Oct 16 14:36 /home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so -&gt; libudev.so.1.6.3
+lrwxrwxrwx 1 dell dell     16 Oct 16 14:36 /home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so.1 -&gt; libudev.so.1.6.3
+<span class="nt">-rwxr-xr-x</span> 1 dell dell 145904 Oct 16 14:36 /home/dell/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.so.1.6.3
+</pre></table></code></div></div><p>可以看到，前两个实际上是软链接，而且，无法使用 <code class="language-plaintext highlighter-rouge">adb</code> 工具将前两个文件传到开发板上，因此，仅将 <code class="language-plaintext highlighter-rouge">libudev.so.1.6.3</code> 传到开发板的 <code class="language-plaintext highlighter-rouge">/lib</code> 目录下，并为其创建软链接。</p><p>或者重新打包，将 <code class="language-plaintext highlighter-rouge">libudev</code> 的库打包到镜像中，重新烧录：</p><div class="language-bash highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="c"># 打包前将 libudev 的库复制到开发板的 rootfs 目录中</span>
+<span class="nb">cp</span> ~/Tina-Linux/out/f133-mq_r/staging_dir/target/usr/lib/libudev.<span class="k">*</span> ~/Tina-Linux/out/f133-mq_r/compile_dir/target/rootfs/lib
+</pre></table></code></div></div><p>之后，编译出的二进制文件就可以在开发板上运行了。</p></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/embedded/'>Embedded</a>, <a href='/categories/openwrt/'>OpenWrt</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/openwrt/" class="post-tag no-text-decoration" >OpenWrt</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=芒果派 MQ-R F133 开发指南 - 前尘逐梦&url=https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=芒果派 MQ-R F133 开发指南 - 前尘逐梦&u=https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=芒果派 MQ-R F133 开发指南 - 前尘逐梦&url=https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <a href="http://service.weibo.com/share/share.php?title=芒果派 MQ-R F133 开发指南 - 前尘逐梦&url=https://qianchenzhumeng.github.io/posts/mq-r-f133_develop_guide/" data-toggle="tooltip" data-placement="top" title="Weibo" target="_blank" rel="noopener" aria-label="Weibo"> <i class="fa-fw fab fa-weibo"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/mq-r-f133_develop_guide/">芒果派 MQ-R F133 开发指南</a><li><a href="/posts/gui_development_with_rust_and_gtk4_on_windows/">Windows 下使用 Rust 和 GTK4 创建 GUI 程序</a><li><a href="/posts/modern_robotics_mechanics_planning_and_Control/">Modern Robotics: Mechanics, Planning, and Control</a><li><a href="/posts/rust_notes/">Rust 笔记</a><li><a href="/posts/generate_manufacturing_data_from_eagle/">Eagle 输出 PCB 制造数据</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/mqtt/">MQTT</a> <a class="post-tag" href="/tags/openwrt/">OpenWrt</a> <a class="post-tag" href="/tags/rust/">Rust</a> <a class="post-tag" href="/tags/thingsboard/">ThingsBoard</a> <a class="post-tag" href="/tags/contiki/">Contiki</a> <a class="post-tag" href="/tags/esp8266/">ESP8266</a> <a class="post-tag" href="/tags/stm8/">STM8</a> <a class="post-tag" href="/tags/inventory-management/">Inventory Management</a> <a class="post-tag" href="/tags/iot/">IoT</a> <a class="post-tag" href="/tags/other/">Other</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/compile_openwrt_for_mt7688/"><div class="card-body"> <span class="timeago small" > Aug 28, 2021 <i class="unloaded">2021-08-28T08:00:00+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>OpenWrt 编译</h3><div class="text-muted small"><p> 1. 背景 处理器：MT7688 OpenWrt版本：19.07.2 编译环境：wsl（Ubuntu 20.04.1 LTS） 2. 下载源码 源码地址：https://github.com/openwrt/openwrt 可以通过 gitee 加速代码下载，具体做法是在 gitee 上通过“从GitHub/GitLab导入仓库”的形式创建仓库，等创建好后，从 git...</p></div></div></a></div><div class="card"> <a href="/posts/use_dragion_lg01p_serial_port/"><div class="card-body"> <span class="timeago small" > Aug 20, 2020 <i class="unloaded">2020-08-20T23:41:00+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>自由使用 Dragino 网关 MCU 串口</h3><div class="text-muted small"><p> 网关 Dragino LG01-P LoRa Gateway Linux Side: Processor: AR9331 Frequency: 400MHz Flash: 16MB RAM: 64MB MCU/LoRa Side: MCU: ATMega328P ...</p></div></div></a></div><div class="card"> <a href="/posts/openwrt_gpio_of_mt7688an/"><div class="card-body"> <span class="timeago small" > Mar 20, 2021 <i class="unloaded">2021-03-20T10:00:00+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>OpenWrt GPIO（MT7688AN）</h3><div class="text-muted small"><p> 1. 设备树 在开发板上查看引脚使用情况： root@OpenWrt:~# cat /sys/kernel/debug/gpio gpiochip0: GPIOs 0-31, parent: platform/10000600.gpio, 10000600.gpio: gpio-6 ( |reboot ) in hi...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/how_to_management_embedded_projects_using_gitlab/" class="btn btn-outline-primary" prompt="Older"><p>如何使用 Gitlab 进行嵌入式项目管理</p></a> <a href="/posts/build_iot_gw_for_mq-r-f133.md/" class="btn btn-outline-primary" prompt="Newer"><p>为芒果派 MQ-R F133 编译 iot_gw 网关</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2022 <a href="https://github.com/qianchenzhumeng">前尘逐梦</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/mqtt/">MQTT</a> <a class="post-tag" href="/tags/openwrt/">OpenWrt</a> <a class="post-tag" href="/tags/rust/">Rust</a> <a class="post-tag" href="/tags/thingsboard/">ThingsBoard</a> <a class="post-tag" href="/tags/contiki/">Contiki</a> <a class="post-tag" href="/tags/esp8266/">ESP8266</a> <a class="post-tag" href="/tags/stm8/">STM8</a> <a class="post-tag" href="/tags/inventory-management/">Inventory Management</a> <a class="post-tag" href="/tags/iot/">IoT</a> <a class="post-tag" href="/tags/other/">Other</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?0dfbba74f4bbf4feedaaf402fbae1dd8"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s); })(); </script> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://qianchenzhumeng.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>
