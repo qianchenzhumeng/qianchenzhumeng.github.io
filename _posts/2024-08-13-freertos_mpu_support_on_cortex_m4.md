@@ -26,23 +26,22 @@ STM32Cube\Repository\STM32Cube_FW_L4_V1.17.1\Projects\NUCLEO-L476RG\Applications
 L476RG 资源：
 
 - FLASH: 0x08000000 - 0x08100000 (1M)
-
 - SRAM：两个区域，共 128K
-- SRAM1：96K，0x20000000 - 0x20018000 
+  - SRAM1：96K，0x20000000 - 0x20018000 
   - SRAM2：32K，0x10000000 - 0x10008000
 
 
-![image-20240813203828613](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203828613.png)
+![image-20240813203828613](/assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203828613.png)
 
-![image-20240813203920396](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203920396.png)
+![image-20240813203920396](/assets/img//2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203920396.png)
 
 Target 配置（并没有修改 system_stm32l4xx.c 中，中断向量表的偏移，即仍是放在 0x08000000 位置，下面的工程应该没法运行才对）：
 
-![image-20240813203942808](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203942808.png)
+![image-20240813203942808](/assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203942808.png)
 
 结合 Linker 选项看，实际上没有使用 Target 中的分区，而是在由 Project.sct 文件定义的：
 
-![image-20240813203959386](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203959386.png)
+![image-20240813203959386](/assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203959386.png)
 
 Project.sct：
 
@@ -293,7 +292,7 @@ Cortex-M4F 的栈是递减栈，即向低地址增长。任务栈压栈时，一
 
 硬件入栈的内容如下：
 
-![image-20240813204502963](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813204502963.png)
+![image-20240813204502963](/assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813204502963.png)
 
 左边是使用了 FPU 的情况，右边是没有使用 FPU 的情况。由于硬件已经将部分寄存器压栈了，因此，`xPortPendSVHandler` 一开始就可以使用 r0 ~ r3 寄存器。
 
@@ -410,9 +409,9 @@ uint32_t ulReg;
 
 而 L452RE 的 SRAM，SRAM2 同时映射在 0x20020000 和 0x10000000，因此，可以看做连续的一块使用，也可以看做两块区域使用。
 
-![image-20240813205418006](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813205418006.png)
+![image-20240813205418006](/assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813205418006.png)
 
-![image-20240813205437869](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813205437869.png)
+![image-20240813205437869](/assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813205437869.png)
 
 移植时，暂时按两块分开使用：
 
