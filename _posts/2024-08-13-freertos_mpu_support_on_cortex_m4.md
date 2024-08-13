@@ -32,17 +32,17 @@ L476RG 资源：
   - SRAM2：32K，0x10000000 - 0x10008000
 
 
-![image-20240813203828613](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813203828613.png)
+![image-20240813203828613](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203828613.png)
 
-![image-20240813203920396](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813203920396.png)
+![image-20240813203920396](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203920396.png)
 
 Target 配置（并没有修改 system_stm32l4xx.c 中，中断向量表的偏移，即仍是放在 0x08000000 位置，下面的工程应该没法运行才对）：
 
-![image-20240813203942808](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813203942808.png)
+![image-20240813203942808](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203942808.png)
 
 结合 Linker 选项看，实际上没有使用 Target 中的分区，而是在由 Project.sct 文件定义的：
 
-![image-20240813203959386](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813203959386.png)
+![image-20240813203959386](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813203959386.png)
 
 Project.sct：
 
@@ -293,7 +293,7 @@ Cortex-M4F 的栈是递减栈，即向低地址增长。任务栈压栈时，一
 
 硬件入栈的内容如下：
 
-![image-20240813204502963](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813204502963.png)
+![image-20240813204502963](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813204502963.png)
 
 左边是使用了 FPU 的情况，右边是没有使用 FPU 的情况。由于硬件已经将部分寄存器压栈了，因此，`xPortPendSVHandler` 一开始就可以使用 r0 ~ r3 寄存器。
 
@@ -410,9 +410,9 @@ uint32_t ulReg;
 
 而 L452RE 的 SRAM，SRAM2 同时映射在 0x20020000 和 0x10000000，因此，可以看做连续的一块使用，也可以看做两块区域使用。
 
-![image-20240813205418006](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813205418006.png)
+![image-20240813205418006](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813205418006.png)
 
-![image-20240813205437869](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4/image-20240813205437869.png)
+![image-20240813205437869](../assets/img/2024-08-13-freertos_mpu_support_on_cortex_m4.assets/image-20240813205437869.png)
 
 移植时，暂时按两块分开使用：
 
@@ -514,12 +514,12 @@ const uint32_t * __privileged_data_end__ = ( uint32_t * ) 0x200001FFUL; /* 和 s
 
 ### 5. 参考资料
 
-[1] https://www.freertos.org/MPU_Chapter.pdf
+[1] [https://www.freertos.org/MPU_Chapter.pdf](https://www.freertos.org/MPU_Chapter.pdf)
 
-[2] https://www.cnblogs.com/qiyuexin/p/9026365.html
+[2] [https://www.cnblogs.com/qiyuexin/p/9026365.html](https://www.cnblogs.com/qiyuexin/p/9026365.html)
 
-[3] Keil 链接文件语法说明 https://developer.arm.com/documentation/dui0474/m/scatter-file-syntax
+[3] [Keil 链接文件语法说明](https://developer.arm.com/documentation/dui0474/m/scatter-file-syntax)
 
-[4] 管理 STM32 MCU 中的内存保护单元 https://www.st.com/resource/zh/application_note/an4838-managing-memory-protection-unit-in-stm32-mcus-stmicroelectronics.pdf
+[4] [管理 STM32 MCU 中的内存保护单元](https://www.st.com/resource/zh/application_note/an4838-managing-memory-protection-unit-in-stm32-mcus-stmicroelectronics.pdf)
 
-[5] Cortex-M4 Devices Generic User Guide https://developer.arm.com/documentation/dui0553/a/
+[5] [Cortex-M4 Devices Generic User Guide](https://developer.arm.com/documentation/dui0553/a/)
