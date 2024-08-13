@@ -149,7 +149,7 @@ void *pvHexLineParser(char *pcLineData, xHexLineInfo_t *pxHexLineInfo)
 
     /* 获取 CC 字段 */
     memset((void *)acString, '\0', sizeof(acString));
-    memcpy((void *)acString, (void *)(pcLineData + 9 + pxHexLineInfo->u8Length), 2);
+    memcpy((void *)acString, (void *)(pcLineData + 9 + pxHexLineInfo->u8Length * 2), 2);
     pxHexLineInfo->u8CheckSum = (uint8_t)strtol(acString, NULL, 16);
 
     return pcLineData+9;
