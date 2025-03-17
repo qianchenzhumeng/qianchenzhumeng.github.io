@@ -17,7 +17,7 @@ ThingsBoard 版本：3.1
 
 生成自签证书
 
-从 [ThingsBoard仓库](https://github.com/thingsboard/thingsboard/tree/master/tools/src/main/shell) 下载这三个文件：
+从 [ThingsBoard仓库](https://github.com/thingsboard/thingsboard/blob/release-3.1/tools/src/main/shell) 下载这三个文件：
 
 - client.keygen.sh
 - keygen.properties
@@ -36,6 +36,14 @@ DOMAIN_SUFFIX="localhost"
 sh server.keygen.sh
 sh client.keygen.sh
 ```
+
+生成 client 的密钥时，如果遇到如下报错：
+
+```
+keytool error: java.security.UnrecoverableKeyException: Get Key failed: Given final block not properly padded. Such issues can arise if a bad key is used during decryption.
+```
+
+则将 `keygen.properties` 中 `SERVER_KEY_PASSWORD` 的值修改为 `SERVER_KEYSTORE_PASSWORD` 的值，然后在生成 client 的密钥。
 
 将 server 密钥库复制到 ThingsBoard 的配置文件目录下，并修改所有者、权限：
 
@@ -59,6 +67,22 @@ export MQTT_BIND_PORT=8883
 export MQTT_SSL_KEY_STORE=mqttserver.jks
 export MQTT_SSL_KEY_STORE_PASSWORD=server_ks_password
 export MQTT_SSL_KEY_PASSWORD=server_key_password
+```
+
+server 证书、密钥等要保存好，后续添加新设备时会用到：
+
+- 将 `mqttserver.cer`、`mqttserver.jks`、`keygen.properties` 及 `client.keygen.sh` 复制到同一目录下；
+- 必要时，修改 `keygen.properties` 中 `CLIENT_FILE_PREFIX` 的值，比如改为新设备的名称；
+- 运行 `client.keygen.sh` 为新设备生成证书、密钥等。
+
+例如：
+
+```bash
+irrigator$ ls
+client.keygen.sh  keygen.properties  mqttserver.cer  mqttserver.jks
+irrigator$ ./client.keygen.sh
+irrigator$ ls
+client.keygen.sh  irrigator.jks  irrigator.nopass.pem  irrigator.p12  irrigator.pem  irrigator.pub.pem  keygen.properties  mqttserver.cer  mqttserver.jks
 ```
 
 ### (2) Windows
