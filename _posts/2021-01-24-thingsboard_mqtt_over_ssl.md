@@ -254,4 +254,4 @@ INFO  o.t.s.s.q.DefaultTbRuleEngineConsumerService - Timeout to process [2] mess
 
 [2] [https://thingsboard.io/docs/user-guide/certificates/](https://thingsboard.io/docs/user-guide/certificates/)
 
-[3] https://tutorialspedia.com/an-overview-of-one-way-ssl-and-two-way-ssl/
+[3] [https://tutorialspedia.com/an-overview-of-one-way-ssl-and-two-way-ssl/](https://tutorialspedia.com/an-overview-of-one-way-ssl-and-two-way-ssl/)
