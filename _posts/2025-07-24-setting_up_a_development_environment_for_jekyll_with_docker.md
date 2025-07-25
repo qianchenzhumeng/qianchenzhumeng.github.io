@@ -36,8 +36,8 @@ sudo docker pull docker.1ms.run/ubuntu:24.04
 ```
 FROM docker.1ms.run/ubuntu:24.04
 
-# /home 和 nginx 配置文件目录需要挂载
-VOLUME ["/home", "/etc/nginx/conf.d"]
+# 需要挂载的目录（这里也可以不用指定）
+VOLUME ["/home", "/etc/nginx/conf.d", "/var/www/html"]
 
 # 安装必要软件
 RUN apt-get update && apt-get install -y sudo vim nginx ruby-full git build-essential zlib1g-dev openssh-server
@@ -54,17 +54,8 @@ RUN mkdir /var/run/sshd
 # 将 ubuntu 用户的密码修改为 password
 RUN echo 'ubuntu:password' | chpasswd
 
-# 安装 jekyll
-RUN mkdir /gems && chown ubuntu:ubuntu /gems
-USER ubuntu
-ENV GEM_HOME /gems
-ENV PATH=/gems/bin:$PATH
-RUN echo '# Install Ruby Gems to /gems' >> ~/.bashrc \
-    && echo 'export GEM_HOME="/gems"' >> ~/.bashrc \
-    && echo 'export PATH="/gems/bin:$PATH"' >> ~/.bashrc \
-    && gem install jekyll bundler
+# 这里不安装 jekyll，因为安装了没有用，构建博客时，还需要安装博客依赖的 gems，要安装到挂载的目录中，避免容器重启后丢失。
 
-USER root
 EXPOSE 80
 EXPOSE 22
 # 让 nginx 在前台运行，不加这一句，容器启动后 nginx 不会自动启动
@@ -126,8 +117,8 @@ Dockerfile ubuntu_jekyll.tar
 
 ```
 ~/Dockerfile$ docker ps -a
-CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                               NAMES
-578d56da60ae   ubuntu_jekyll:24.04   "nginx -g 'daemon of…"   14 seconds ago   Up 14 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   ubuntu_jekyll
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                                                                      NAMES
+6a4beee9cd39   ubuntu_jekyll:24.04   "nginx -g 'daemon of…"   26 minutes ago   Up 26 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:2222->22/tcp, :::2222->22/tcp   ubuntu_jekyll
 ```
 
 使用 curl 测试，一切顺利的话，容器会返回 nginx 的欢迎信息：
@@ -177,6 +168,36 @@ root@6a4beee9cd39:/# service nginx status
 ````
 root@6a4beee9cd39:/# /usr/sbin/sshd
 ````
+
+启动后就可以通过 ssh 登录容器了，例如：
+
+```
+ssh ubuntu@localhost -p 2222
+```
+
+也可以通过 SFTP 访问。
+
+## 4. 安装 jekyll
+
+在容器中切换到 ubuntu 用户，将 gems 安装到该用户的 home 目录下，由于 /home 目录是挂载到容器上去的，因此安装完毕后，即便容器重启也不会丢失。
+
+指定 gems 目录在 ubuntu 用户的 home 目录下：
+
+```
+ubuntu@6a4beee9cd39:~$ echo '# Install Ruby Gems to ~/gems' >> ~/.bashrc
+ubuntu@6a4beee9cd39:~$ echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc
+ubuntu@6a4beee9cd39:~$ echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.bashrc
+ubuntu@6a4beee9cd39:~$ source ~/.bashrc
+```
+
+进入博客目录，安装需要的 gems：
+
+```
+ubuntu@6a4beee9cd39:~/blog$ bundle install
+```
+
+之后就可以构建博客了。
+
 
 ## 说明
 
